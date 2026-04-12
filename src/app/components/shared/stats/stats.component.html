@@ -1,0 +1,20 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+
+  @for (stat of stats(); track stat.id; let i = $index) {
+    <div 
+      class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6 text-white shadow-lg fade-in-up"
+      [style.animationDelay]="i * 150 + 'ms'"
+    >
+      
+      <h3 class="text-xl font-bold text-yellow-600">
+        {{ stat.stat_label_en }}
+      </h3>
+
+      <p class="mt-2 text-3xl font-bold">
+        {{ stat.stat_value }} {{ stat.unit }}
+      </p>
+
+    </div>
+  }
+
+</div>

@@ -1,0 +1,134 @@
+<nav class="bg-black text-white px-6 py-4 flex items-center justify-between">
+
+  <!-- Logo -->
+  <a routerLink="/home" class="flex items-center gap-2">
+    <img src="logo.png" alt="logo" class="h-10 w-auto">
+  </a>
+
+  <!-- Links -->
+  <div class="hidden md:flex items-center gap-6">
+    <a routerLink="/dashboard/home" routerLinkActive="bg-yellow-500 text-black"
+      class="relative px-4 py-2 rounded-md font-semibold text-white transition-all duration-300 hover:bg-yellow-600 hover:text-black">Home</a>
+    <a routerLink="/dashboard/about-us" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
+          transition-all duration-300 
+          hover:bg-yellow-600 hover:text-black 
+          after:content-[''] after:absolute after:left-0 after:bottom-0 
+          after:h-[2px] after:w-full after:bg-yellow-500 
+          after:origin-left after:scale-x-0 
+          hover:after:scale-x-100 
+          after:transition-transform after:duration-300">
+      About Us
+    </a>
+
+    <a routerLink="/dashboard/gold-prices" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
+          transition-all duration-300 
+          hover:bg-yellow-600 hover:text-black 
+          after:content-[''] after:absolute after:left-0 after:bottom-0 
+          after:h-[2px] after:w-full after:bg-yellow-500 
+          after:origin-left after:scale-x-0 
+          hover:after:scale-x-100 
+          after:transition-transform after:duration-300">
+      Gold Prices
+    </a>
+
+    <a routerLink="/dashboard/products" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
+          transition-all duration-300 
+          hover:bg-yellow-600 hover:text-black 
+          after:content-[''] after:absolute after:left-0 after:bottom-0 
+          after:h-[2px] after:w-full after:bg-yellow-500 
+          after:origin-left after:scale-x-0 
+          hover:after:scale-x-100 
+          after:transition-transform after:duration-300">
+      Shop
+    </a>
+
+    <a routerLink="/dashboard/making-charges" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
+          transition-all duration-300 
+          hover:bg-yellow-600 hover:text-black 
+          after:content-[''] after:absolute after:left-0 after:bottom-0 
+          after:h-[2px] after:w-full after:bg-yellow-500 
+          after:origin-left after:scale-x-0 
+          hover:after:scale-x-100 
+          after:transition-transform after:duration-300">
+      Making Charges
+    </a>
+  </div>
+
+  <!-- Right buttons -->
+  <div class="flex items-center gap-3">
+
+    <button (click)="toggleLanguage()"
+      class="border border-white px-3 py-1 rounded hover:bg-white hover:text-black transition">
+      {{ currentLang }}
+    </button>
+
+    <button class="bg-yellow-400 text-black px-4 py-1 rounded font-semibold hover:bg-yellow-500 transition">
+      Get Started
+    </button>
+
+  <button
+  class="md:hidden w-8 h-8 flex flex-col justify-center items-center gap-[6px]"
+  (click)="toggleMenu()"
+>
+  <!-- Top line -->
+  <span
+    class="block w-6 h-[3px] bg-white transition-all duration-300 origin-center"
+    [ngClass]="{
+      'rotate-45 translate-y-[6px]': isMenuOpen
+    }">
+  </span>
+
+  <!-- Middle line -->
+  <span
+    class="block w-6 h-[3px] bg-white transition-all duration-300"
+    [ngClass]="{
+      'opacity-0': isMenuOpen
+    }">
+  </span>
+
+  <!-- Bottom line -->
+  <span
+    class="block w-6 h-[3px] bg-white transition-all duration-300 origin-center"
+    [ngClass]="{
+      '-rotate-45 -translate-y-[6px]': isMenuOpen
+    }">
+  </span>
+</button>
+
+  </div>
+</nav>
+
+<!-- Mobile Menu (Animated) -->
+<div
+  class="md:hidden bg-black text-white px-6 overflow-hidden transition-all duration-500 ease-in-out"
+  [ngClass]="{
+    'max-h-96 py-4 opacity-100': isMenuOpen,
+    'max-h-0 py-0 opacity-0': !isMenuOpen
+  }">
+
+  <a routerLink="/dashboard/home" (click)="closeMenu()"
+    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
+    Home
+  </a>
+
+  <a routerLink="/dashboard/about-us" (click)="closeMenu()"
+    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
+    About Us
+  </a>
+
+  <a routerLink="/dashboard/gold-prices" (click)="closeMenu()"
+    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
+    Gold Prices
+  </a>
+
+  <a routerLink="/dashboard/shop" (click)="closeMenu()"
+    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
+    Shop
+  </a>
+
+  <a routerLink="/dashboard/making-charges" (click)="closeMenu()"
+    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
+    Making Charges
+  </a>
+
+</div>

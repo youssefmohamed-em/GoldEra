@@ -1,0 +1,43 @@
+<div class="bg-[#121212] p-4 rounded-3xl border border-white/5 shadow-xl">
+  
+  <div class="flex flex-col gap-6">
+    <div class="flex justify-between items-center">
+      <h3 class="text-white text-lg font-medium">Live Trading Dashboard</h3>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        <span class="text-green-500 text-xs">Live</span>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-4">
+    
+    </div>
+
+    <div class="text-center">
+      <p class="text-gray-500 text-xs uppercase tracking-widest">Gold Price Trends (18K, 24K, 21K)</p>
+    </div>
+
+    <div class="h-[300px] w-full">
+      <p-chart 
+        type="line" 
+        [data]="data()" 
+        [options]="options()" 
+        height="300px"
+      ></p-chart>
+    </div>
+
+<button 
+  (click)="scrollToPrices()"
+  class="w-full py-3 bg-gray-800/50 hover:bg-gray-800 text-gray-300 rounded-xl text-sm transition-colors border border-white/5 uppercase tracking-tighter flex items-center justify-center gap-2"
+>
+  <!-- eye icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+
+  View Live Prices
+</button>
+
+  </div>
+</div>

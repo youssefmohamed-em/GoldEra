@@ -1,0 +1,134 @@
+@if (loading()) {
+  <div class="flex justify-center items-center min-h-screen bg-[#0b0f1a]">
+    <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+} @else if (productDetails(); as product) {
+
+<div class="min-h-screen bg-[#0b0f1a] text-white py-10">
+
+  <div class="max-w-6xl mx-auto px-4">
+    
+    <!-- Back -->
+    <button (click)="goBack()" class="mb-6 text-gray-300 hover:text-yellow-600 transition text-xl font-bold">
+      ← Back to Shop
+    </button>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+
+      <!-- IMAGE -->
+      <div class="bg-[#111827] rounded-2xl p-6 shadow-lg flex justify-center items-center">
+        <img
+          [src]="product.imageUrl"
+          class="max-h-[420px] object-contain hover:scale-105 transition duration-300"
+        />
+      </div>
+
+      <!-- DETAILS -->
+      <div class="flex flex-col gap-6">
+
+        <!-- TITLE -->
+        <h1 class="text-3xl md:text-4xl font-bold text-yellow-400">
+          {{ product.nameEn }}
+        </h1>
+
+        <!-- PRICE -->
+        <div class="text-4xl font-bold">
+          EGP {{ product.currentSellPrice | number:'1.2-2' }}
+          <span class="text-sm text-gray-400">/ piece</span>
+        </div>
+
+        <!-- INFO -->
+        <div class="space-y-3 text-sm">
+
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Weight:</span>
+            <span class="text-yellow-400 font-semibold">
+              {{ product.weightValue }}{{ product.weightUnit }}
+            </span>
+          </div>
+
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Purity:</span>
+            <span class="text-yellow-400 font-semibold">
+              {{ product.purity }}
+            </span>
+          </div>
+
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Category:</span>
+            <span class="text-yellow-400 font-semibold">
+              {{ product.category.nameEn }}
+            </span>
+          </div>
+
+          <div class="flex justify-between border-b border-gray-700 pb-2">
+            <span class="text-gray-400">Stock:</span>
+            @if (product.isActive) {
+              <span class="text-green-500 font-semibold">In Stock</span>
+            } @else {
+              <span class="text-red-500 font-semibold">Out of Stock</span>
+            }
+          </div>
+
+        </div>
+
+        <!-- QUANTITY -->
+        <div class="mt-4">
+          <p class="mb-2 text-gray-300">Quantity:</p>
+
+          <div class="flex items-center bg-white rounded-lg overflow-hidden w-fit text-black">
+            <button (click)="decreaseQuantity()" class="px-4 py-2 hover:bg-gray-200">-</button>
+            <span class="px-6 py-2 font-bold">{{ quantity() }}</span>
+            <button (click)="increaseQuantity()" class="px-4 py-2 hover:bg-gray-200">+</button>
+          </div>
+        </div>
+
+        <!-- TOTAL BOX -->
+        <div class="border border-yellow-500 rounded-xl p-4 flex justify-between items-center mt-4">
+          <span class="font-semibold">TOTAL:</span>
+          <span class="text-2xl font-bold text-yellow-400">
+            EGP {{ product.currentSellPrice * quantity() | number:'1.2-2' }}
+          </span>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="flex gap-4 mt-4">
+
+          <button
+            (click)="addToCart()"
+            class="flex-1 flex items-center justify-center gap-2 bg-yellow-500 text-white font-bold py-2 rounded-lg hover:bg-yellow-600 transition-all duration-300"
+          >
+            <i class="pi pi-shopping-cart"></i> ADD TO CART
+          </button>
+
+          <button (click)="buyNow()" 
+            class="flex-1 flex items-center justify-center gap-2 border border-yellow-500 text-yellow-500 font-bold py-2 rounded-lg hover:bg-yellow-500 hover:text-white transition-all duration-300"
+          >
+            <i class="pi pi-bolt" style="font-size: larger;"></i> BUY NOW
+          </button>
+
+        </div>
+
+        <!-- FOOTER INFO -->
+        <div class="text-sm text-gray-400 mt-4 flex justify-between">
+          <span>Share Product</span>
+          <span>Current Price per gram: EGP {{ product.currentSellPrice / product.weightValue | number:'1.2-2' }}</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+} @else {
+  <div class="flex justify-center items-center min-h-screen bg-[#0b0f1a] text-gray-400">
+    Product not found
+  </div>
+}
+
+
+@if (marketOpen() === false) {
+  <div class="bg-red-500 text-white p-3 rounded mb-3 text-center">
+    🚫 Market is currently closed
+  </div>
+}

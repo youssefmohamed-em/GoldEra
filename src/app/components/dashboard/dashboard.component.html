@@ -1,0 +1,72 @@
+<app-header></app-header>
+<div class="bg-black overflow-hidden min-h-screen flex items-center justify-center p-4">
+  <div class="absolute inset-0 z-0 pointer-events-none">
+
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+      <!-- Lines -->
+      <g stroke="#facc15" stroke-width="1" opacity="0.3">
+        <line x1="10%" y1="20%" x2="80%" y2="10%">
+          <animate attributeName="x2" values="80%;70%;80%" dur="8s" repeatCount="indefinite" />
+        </line>
+
+        <line x1="5%" y1="50%" x2="70%" y2="70%">
+          <animate attributeName="y2" values="70%;80%;70%" dur="10s" repeatCount="indefinite" />
+        </line>
+
+        <line x1="20%" y1="85%" x2="95%" y2="60%">
+          <animate attributeName="y2" values="60%;70%;60%" dur="7s" repeatCount="indefinite" />
+        </line>
+
+        <line x1="85%" y1="15%" x2="50%" y2="90%">
+          <animate attributeName="x2" values="50%;45%;50%" dur="9s" repeatCount="indefinite" />
+        </line>
+
+        <line x1="15%" y1="30%" x2="90%" y2="80%">
+          <animate attributeName="x1" values="15%;20%;15%" dur="11s" repeatCount="indefinite" />
+        </line>
+      </g>
+
+      <!-- Dots -->
+      <g fill="#facc15" opacity="0.6">
+        <circle cx="15%" cy="25%" r="2">
+          <animate attributeName="cy" values="25%;30%;25%" dur="5s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="70%" cy="65%" r="2.5">
+          <animate attributeName="cy" values="65%;72%;65%" dur="7s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="50%" cy="15%" r="2">
+          <animate attributeName="cy" values="15%;22%;15%" dur="6s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="90%" cy="40%" r="1.5">
+          <animate attributeName="cy" values="40%;48%;40%" dur="8s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="25%" cy="75%" r="2">
+          <animate attributeName="cy" values="75%;82%;75%" dur="9s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="80%" cy="20%" r="1.5">
+          <animate attributeName="cy" values="20%;28%;20%" dur="10s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="10%" cy="60%" r="2">
+          <animate attributeName="cy" values="60%;68%;60%" dur="7.5s" repeatCount="indefinite"/>
+        </circle>
+
+        <circle cx="60%" cy="85%" r="1.5">
+          <animate attributeName="cy" values="85%;92%;85%" dur="8.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+      
+    </svg>
+  
+</div>
+<div class="relative z-10">
+
+  <router-outlet></router-outlet>
+</div>
+
+</div>

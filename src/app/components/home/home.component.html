@@ -1,0 +1,104 @@
+<div class="min-h-screen p-6">
+
+  <div class="max-w-6xl mx-auto">
+
+    <!-- GRID: Left | Right -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+      <!-- LEFT SIDE -->
+      <div class="flex flex-col gap-8">
+
+        <!-- Hero -->
+        <div class="fade-in-up">
+          <app-hero></app-hero>
+        </div>
+
+        <!-- Stats -->
+        <div class="fade-in-up" style="animation-delay: 0.2s">
+          <app-stats></app-stats>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="fade-in-up" style="animation-delay: 0.4s">
+        <app-chart></app-chart>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Prices Section -->
+<div class="mt-16 fade-in-up" style="animation-delay: 0.6s">
+
+  <h1 class="text-center text-yellow-600 font-bold text-5xl">
+    live gold prices
+  </h1>
+
+  <h3 class="text-center text-white text-2xl mt-3">
+    Real-time pricing updated every second
+  </h3>
+
+  <div id="prices" class="mt-6">
+    <app-prices></app-prices>
+  </div>
+<div>
+<h1 class="text-center text-yellow-600 text-4xl font-bold"> Why Choose Goldera  ?</h1>
+
+<div class="bg-[#101010] p-8 md:p-12">
+  
+  <h2 class="text-3xl font-semibold text-center text-white mb-12">Why Choose Goldera?</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    
+  @for (card of cardData; track card) {
+  <div class="group h-full">
+    <div 
+      class="bg-[#1C1C1C] h-full p-8 rounded-3xl border border-[#303030] 
+             transition-all duration-500 ease-out shadow-2xl
+             hover:-translate-y-2 group-hover:shadow-[0_20px_60px_-15px_rgba(251,191,36,0.15)]
+             group-hover:-rotate-y-1 group-hover:-rotate-x-1"
+    >
+      
+      <div class="flex flex-col items-center h-full transition-transform duration-500 group-hover:skew-x-[-1deg]">
+
+    <div 
+  class="bg-[#FBBD07]  p-8 rounded-3xl border border-[#303030] 
+         transition-all duration-500 ease-out shadow-2xl
+         hover:-translate-y-3 hover:scale-[1.02]
+         hover:shadow-[0_25px_80px_-20px_rgba(251,191,36,0.25)]
+          hover:-translate-y-3 hover:scale-[1.02]
+         hover:shadow-[0_0_25px_rgba(251,191,36,0.6)]
+         group"
+>
+  <i [class]="card.icon" class="text-black text-6xl" style="font-size: 2.5rem"></i>
+</div>
+
+        <h3 class="text-xl font-medium text-[#FBBD07] mb-5 text-center px-4">
+          {{ card.title }}
+        </h3>
+
+        <p class="text-sm text-gray-300 text-center leading-relaxed">
+          {{ card.description }}
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+}
+
+  </div>
+</div>
+
+</div>
+  <div class="bg-white text-center "> 
+    <h1 class="text-yellow-600 text-3xl font-bold"> Our Best Selling</h1>
+    <h1 class="text-gray-300 text-xl ">Our Gold products section</h1>
+    <br>
+    <app-product-categories></app-product-categories>
+  </div>
+</div>

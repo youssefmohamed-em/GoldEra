@@ -1,0 +1,130 @@
+<div class="p-6 min-h-screen bg-white text-gray-800 rounded-xl">
+
+  <!-- HEADER -->
+  <div class="text-center mb-10">
+
+    <h1 class="text-3xl font-extrabold text-yellow-500 mb-2">
+      All Products
+    </h1>
+
+    <p class="text-gray-500 text-sm mb-4">
+      Explore our certified collection of gold investment products
+    </p>
+
+    <!-- GOLD DIVIDER -->
+    <div class="w-28 h-[3px] mx-auto bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full"></div>
+
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center items-center p-10">
+      <div class="w-10 h-10 border-4 border-gray-300 border-t-yellow-500 rounded-full animate-spin"></div>
+    </div>
+  } @else {
+
+   <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
+
+      <!-- PRODUCTS GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1">
+
+        @for (product of products(); track product.id) {
+
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:border-yellow-400 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-[420px] group">
+
+            <!-- IMAGE -->
+            <div class="relative">
+              <div class="h-32 bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:ring-2 group-hover:ring-yellow-400">
+
+                <img [src]="product.imageUrl" class="max-h-full max-w-full object-contain">
+
+              </div>
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+
+              <div class="absolute top-2 right-2 bg-yellow-500 text-black text-[10px] px-2 py-1 rounded-full">
+                New
+              </div>
+            </div>
+
+            <div class="p-3 flex flex-col gap-2">
+
+              <!-- NAME -->
+              <h2 class="text-base font-semibold text-gray-800 truncate">
+                {{ product.nameEn }}
+              </h2>
+
+              <!-- DESCRIPTION -->
+              <p class="text-xs text-gray-500 line-clamp-2">
+                {{ product.descriptionEn || 'No description' }}
+              </p>
+
+              <!-- INFO -->
+              <div class="text-xs text-gray-600 flex flex-col gap-1 mt-1">
+
+                <div class="flex justify-between">
+                  <span>⚖ Weight</span>
+                  <span class="font-medium">{{ product.weightValue }} {{ product.weightUnit }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span>💎 Purity</span>
+                  <span class="font-medium">{{ product.purity }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span>📦 Piece</span>
+                  <span class="font-medium">1</span>
+                </div>
+
+              </div>
+
+              <!-- PRICE -->
+              <div class="mt-2 flex justify-between items-center">
+                <span class="text-[10px] text-gray-400">Price</span>
+                <span class="text-yellow-500 text-lg font-bold">
+                  {{ product.currentSellPrice | number:'1.2-2' }} EGP
+                </span>
+              </div>
+
+              <!-- BUTTONS -->
+              <div class="mt-3 flex gap-2">
+
+                <button
+                  class="flex-1 flex items-center justify-center gap-2 bg-yellow-500 text-white font-bold py-2 rounded-lg hover:bg-yellow-600 transition-all duration-300"
+                  (click)="add(product.id)">
+                  <i class="pi pi-shopping-cart"></i>
+                  Buy
+                </button>
+
+                <button
+                  class="flex-1 flex items-center justify-center gap-2 border border-yellow-500 text-yellow-500 font-bold py-2 rounded-lg hover:bg-yellow-500 hover:text-white transition-all duration-300"
+                  (click)="viewDetails(product.slugEn)">
+                  <i class="pi pi-eye"></i>
+                  View
+                </button>
+
+              </div>
+
+            </div>
+          </div>
+
+        }
+
+      </div>
+
+      <!-- CART -->
+     <div class="w-full lg:w-[300px] lg:sticky lg:top-20 self-start">
+        <app-cart></app-cart>
+      </div>
+
+    </div>
+  }
+
+  <!-- MARKET CLOSED -->
+  @if (marketOpen() === false) {
+    <div class="bg-red-500 text-white p-3 rounded mb-3 text-center mt-6">
+      🚫 Market is currently closed
+    </div>
+  }
+
+</div>

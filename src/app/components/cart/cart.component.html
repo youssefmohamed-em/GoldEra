@@ -1,0 +1,21 @@
+@if (cartService.cartVisible()) {
+
+ <div
+  class="fixed bottom-6 right-6 w-14 h-14 bg-[#FBBD07] hover:bg-[#d4a306]
+         rounded-full flex items-center justify-center shadow-lg
+         cursor-pointer relative transition-all duration-300
+         hover:scale-110 hover:shadow-2xl"
+  (click)="goToCart()"
+>
+  <i class="pi pi-shopping-cart text-white text-xl  font-bold"></i>
+
+  @if (cartService.cartCount() > 0) {
+    <span
+      class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full animate-bounce"
+    >
+      {{ cartService.cartCount() }}
+    </span>
+  }
+</div>
+
+}
