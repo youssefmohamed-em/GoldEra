@@ -1,0 +1,132 @@
+<div class="min-h-screen bg-[#050505] text-white p-4 md:p-10 font-sans tracking-tight [--gold:#FFD700]">
+  <div class="max-w-4xl mx-auto space-y-8">
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="flex items-center gap-5">
+        <div class="w-14 h-14 rounded-2xl bg-[#FFD700]/10 flex items-center justify-center border border-[#FFD700]/40 shadow-[0_0_15px_rgba(255,215,0,0.1)]">
+          <svg class="w-8 h-8 text-[#FFD700]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-3xl font-extrabold text-yellow-600 drop-shadow-sm">Upload Payment Proof</h1>
+          <p class="text-gray-400 font-medium">Complete your order verification</p>
+        </div>
+      </div>
+
+      <button class="flex items-center gap-2 px-6 py-2.5 rounded-xl border-2 border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-black transition-all duration-300 font-bold uppercase text-xs tracking-widest">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to Orders
+      </button>
+    </div>
+
+    <div class="group relative bg-[#111] border border-white/10 rounded-[2rem] p-8 overflow-hidden transition-all hover:border-[#FFD700]/40">
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFD700] to-transparent opacity-50"></div>
+      
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-2 h-6 bg-yellow-600 rounded-full"></div>
+        <h2 class="text-lg font-bold uppercase tracking-tighter text-white">Order Information</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white/[0.03] border border-white/5 p-6 rounded-2xl">
+          <p class="text-[10px] text-yellow-600 mb-2 font-black tracking-[0.2em] uppercase">Order Number</p>
+          <p class="text-xl font-bold text-white">{{ order()?.orderNumber }}</p>
+        </div>
+
+        <div class="bg-white/[0.03] border border-white/5 p-6 rounded-2xl">
+          <p class="text-[10px] text-yellow-600 mb-2 font-black tracking-[0.2em] uppercase">Total Amount</p>
+          <p class="text-2xl font-black text-white">
+            <span class="text-[#FFD700] text-sm mr-1">{{ order()?.currency }}</span>
+            {{ order()?.paidAmount | number:'1.2-2' }}
+          </p>
+        </div>
+
+        <div class="bg-white/[0.03] border border-white/5 p-6 rounded-2xl flex items-center justify-between">
+          <div>
+            <p class="text-[10px] text-yellow-600 mb-2 font-black tracking-[0.2em] uppercase">Payment via</p>
+            <p class="text-lg font-bold text-white">{{ order()?.paymentMethod?.nameEn }}</p>
+          </div>
+          @if (order()?.paymentMethod?.imageUrl) {
+<img
+  [src]="order()?.paymentMethod?.imageUrl"
+  class="w-10 h-10 object-contain rounded-lg bg-white/5 border border-white/10 p-1"
+/>          }
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-[#111] border border-white/10 rounded-[2rem] p-8 space-y-8 relative">
+      
+      <div class="space-y-1">
+        <h2 class="text-2xl font-bold text-white">Upload Receipt</h2>
+        <p class="text-gray-500">Ensure the transaction ID and amount are clearly visible</p>
+      </div>
+
+      <div
+        (click)="fileInput.click()"
+        class="relative group border-2 border-dashed border-white/10 hover:border-[#FFD700]/50 rounded-[1.5rem] p-12 text-center cursor-pointer bg-white/[0.02] transition-all duration-500 overflow-hidden"
+      >
+        <div class="absolute inset-0 bg-[#FFD700]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        
+        <div class="relative z-10">
+          <div class="w-20 h-20 bg-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(255,215,0,0.2)] group-hover:scale-110 transition-transform duration-500">
+            <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path d="M12 4v16m8-8H4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="text-xl text-white font-bold">Tap to Select File</p>
+          <p class="text-sm text-gray-400 mt-2 font-medium">or drag and drop your receipt here</p>
+          <div class="flex justify-center gap-3 mt-6">
+             <span class="px-3 py-1 bg-white/5 rounded-md text-[10px] text-gray-400 border border-white/10">JPG</span>
+             <span class="px-3 py-1 bg-white/5 rounded-md text-[10px] text-gray-400 border border-white/10">PNG</span>
+             <span class="px-3 py-1 bg-white/5 rounded-md text-[10px] text-gray-400 border border-white/10">PDF</span>
+          </div>
+        </div>
+      </div>
+
+      <input #fileInput type="file" accept="image/*,.pdf" hidden (change)="onFileSelected($event)" />
+
+      @if (selectedFile) {
+        <div class="flex items-center justify-between bg-[#FFD700]/10 border border-[#FFD700]/30 p-5 rounded-2xl animate-in zoom-in-95 duration-300">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-[#FFD700] rounded-xl flex items-center justify-center text-black">
+              <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+            </div>
+            <div>
+              <p class="text-white font-bold">{{ selectedFile.name }}</p>
+              <p class="text-[#FFD700] text-xs font-black uppercase">{{ getFileSize(selectedFile.size) }}</p>
+            </div>
+          </div>
+          <button (click)="selectedFile = null; $event.stopPropagation()" class="p-2 hover:bg-red-500/20 rounded-full text-gray-400 hover:text-red-500 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      }
+
+      <button
+        [disabled]="!selectedFile || isLoading()"
+        (click)="uploadProof()"
+        class="relative w-full overflow-hidden group py-5 rounded-2xl bg-yellow-600 text-black font-black text-xl uppercase tracking-tighter disabled:opacity-20 disabled:grayscale transition-all shadow-[0_10px_40px_rgba(255,215,0,0.2)] active:scale-95"
+      >
+        <div class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
+        
+        @if (!isLoading()) {
+          <span class="relative z-10 flex items-center justify-center gap-2">
+            Confirm & Upload Receipt
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </span>
+        } @else {
+          <span class="flex items-center justify-center gap-3">
+            <svg class="animate-spin h-6 w-6" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+          </span>
+        }
+      </button>
+
+    </div>
+  </div>
+</div>

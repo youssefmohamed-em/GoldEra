@@ -65,13 +65,12 @@
 
 } @else {
 
-<div class="bg-[#1a1a1a] p-6 rounded-2xl border border-white/10 max-w-6xl mx-auto">
+<div class="bg-[#1a1a1a] p-4 sm:p-6 lg:p-8 rounded-2xl border border-white/10 max-w-7xl mx-auto px-4">  
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+ <div class="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
 
     <!-- 🛒 LEFT SIDE - ORDER SUMMARY (ثابت في كل الـ Steps) -->
-    <div class="bg-[#121212] p-5 rounded-xl border border-white/10 flex flex-col">
-
+<div class="bg-[#121212] p-5 rounded-xl border border-white/10 flex flex-col lg:sticky lg:top-24 h-fit shadow-[0_0_20px_rgba(0,0,0,0.4)]">
       <h3 class="text-xl font-bold mb-4 border-b border-white/10 pb-2">
         Order Summary
       </h3>
@@ -110,6 +109,7 @@
       </div>
 
     </div>
+    
 
     <!-- 🔄 RIGHT SIDE - DYNAMIC CONTENT (يتغيير حسب Step) -->
     <div class="bg-[#121212] p-5 rounded-xl border border-white/10">
@@ -186,7 +186,7 @@
       <div class="mt-4">
         <div class="flex items-center justify-between mb-3">
           <h4 class="text-sm font-semibold text-gray-300">📍 Select Delivery Address:</h4>
-          <button (click)="showAddressForm.set(true)"
+          <button (click)="openAddressForm()"
             class="px-2 py-1 bg-yellow-500 text-black text-xs rounded font-bold hover:bg-yellow-600">
             + Add
           </button>
@@ -205,12 +205,43 @@
               class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white placeholder-gray-500" />
             <input formControlName="street" placeholder="Street Address *"
               class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white placeholder-gray-500" />
-            <input formControlName="country" placeholder="Country *"
-              class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white placeholder-gray-500" />
-            <input formControlName="state" placeholder="State / Governorate *"
-              class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white placeholder-gray-500" />
-            <input formControlName="city" placeholder="City *"
-              class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white placeholder-gray-500" />
+            <select formControlName="country"
+  (change)="onCountryChange($event)"
+  class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white">
+  
+  <option value="">Select Country</option>
+
+  @for (country of countries(); track country.id) {
+    <option [value]="country.id">
+      {{ country.nameEn }}
+    </option>
+  }
+</select>
+            <select formControlName="state"
+  (change)="onStateChange($event)"
+  class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white">
+
+  <option value="">Select State</option>
+
+  @for (state of states(); track state.id) {
+    <option [value]="state.id">
+      {{ state.nameEn }}
+    </option>
+  }
+</select>
+   <select formControlName="city"
+  (change)="onCityChange($event)"
+  class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white">
+
+  <option value="">Select City</option>
+
+  @for (city of cities(); track city.id) {
+    <option [value]="city.id">
+      {{ city.nameEn }}
+    </option>
+  }
+
+</select>
             <input formControlName="postalCode" placeholder="Postal Code"
               class="p-2 text-sm rounded-lg bg-[#121212] border border-white/10 text-white placeholder-gray-500" />
           </div>
@@ -328,16 +359,42 @@
         <h4 class="text-yellow-500 font-bold mb-3">📍 Delivery Address</h4>
 
         @if (selectedAddress()) {
-        <div class="text-sm text-gray-300 space-y-1">
-          <p><strong>{{ selectedAddress()?.fullName }}</strong></p>
-          <p>{{ selectedAddress()?.street }}</p>
-          <p>{{ selectedAddress()?.city?.nameEn }} - {{ selectedAddress()?.state?.nameEn }}</p>
-          <p>{{ selectedAddress()?.country?.nameEn }}</p>
-          <p>📞 {{ selectedAddress()?.phone }}</p>
-        </div>
+        <div class="text-sm text-gray-300 space-y-2">
+
+  <!-- NAME -->
+  <div class="flex items-center gap-2">
+    <i class="pi pi-user text-yellow-500"></i>
+    <p><strong>{{ selectedAddress()?.fullName }}</strong></p>
+  </div>
+
+  <!-- STREET -->
+  <div class="flex items-center gap-2">
+    <i class="pi pi-map-marker text-yellow-500"></i>
+    <p>{{ selectedAddress()?.street }}</p>
+  </div>
+
+  <!-- CITY / STATE -->
+  <div class="flex items-center gap-2">
+    <i class="pi pi-building text-yellow-500"></i>
+    <p>{{ selectedAddress()?.city?.nameEn }} - {{ selectedAddress()?.state?.nameEn }}</p>
+  </div>
+
+  <!-- COUNTRY -->
+  <div class="flex items-center gap-2">
+    <i class="pi pi-globe text-yellow-500"></i>
+    <p>{{ selectedAddress()?.country?.nameEn }}</p>
+  </div>
+
+  <!-- PHONE -->
+  <div class="flex items-center gap-2">
+    <i class="pi pi-phone text-yellow-500"></i>
+    <p>{{ selectedAddress()?.phone }}</p>
+  </div>
+
+</div>
         <button (click)="goBack()"
           class="text-xs text-yellow-500 hover:text-yellow-400 mt-2 underline">
-          Change Address
+          Change  payment-method
         </button>
         } @else {
         <p class="text-gray-400 text-sm">No address selected</p>
@@ -427,9 +484,49 @@
       </div>
       }
 
+      <!-- ✅ MARKET CLOSED WARNING (إذا كان السوق مغلق) -->
+      @if (!isMarketOpen()) {
+      <div class="bg-[#2a1a1a] border-2 border-yellow-500/50 rounded-lg p-4 mb-4 mt-4">
+        
+        <!-- الرسالة التحذيرية -->
+        <div class="flex gap-3 mb-4">
+          <i class="pi pi-exclamation-circle text-yellow-500 text-2xl flex-shrink-0 mt-1"></i>
+          
+          <div class="flex-1">
+            <h4 class="text-yellow-500 font-bold mb-2">
+              ⚠️ Market Closed
+            </h4>
+            <p class="text-sm text-gray-300 leading-relaxed">
+              Please note that prices are subject to change according to market prices when opening at 11 AM. 
+              In the event of a price discrepancy, you will be contacted to complete the amount due or refund 
+              the difference so we can complete the purchase.
+            </p>
+          </div>
+        </div>
+
+        <!-- CHECKBOX AGREEMENT -->
+        <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-yellow-500/5 transition-all">
+          <input type="checkbox" 
+            (change)="agreePriceChange.set($event.target.checked)"
+            [checked]="agreePriceChange()"
+            class="w-5 h-5 cursor-pointer accent-yellow-500">
+          
+          <span class="text-sm text-gray-300">
+            I agree to the price change policy and will be available for contact regarding any price adjustments
+          </span>
+        </label>
+
+        <!-- HELPER TEXT -->
+        <p class="text-xs text-gray-500 mt-2 ml-8">
+          ✓ You must agree to proceed with your order
+        </p>
+
+      </div>
       }
 
-      <!-- BUTTONS (Back & Next) -->
+      }
+
+      <!-- BUTTONS (Back & Place Order) -->
       <div class="flex gap-4 mt-6">
 
         <button (click)="goBack()"
@@ -437,14 +534,25 @@
           Back
         </button>
 
+        @if (currentStep() === 3) {
+        <!-- PLACE ORDER BUTTON -->
+       <button
+  (click)="placeOrder()"
+  [disabled]="!isPlaceOrderEnabled() || isPlacingOrder()"
+>
+  @if (isPlacingOrder()) {
+    <i class="pi pi-spin pi-spinner mr-2"></i> Processing...
+  } @else {
+    Place Order
+  }
+</button>
+        } @else {
+        <!-- NEXT BUTTON (Steps 1 & 2) -->
         <button (click)="nextStep()" [disabled]="!isNextEnabled()"
           class="flex-1 py-3 rounded-lg bg-yellow-500 text-black font-bold hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-          @if (currentStep() === 3) {
-            Place Order
-          } @else {
-            Next
-          }
+          Next
         </button>
+        }
 
       </div>
 

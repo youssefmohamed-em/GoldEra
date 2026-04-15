@@ -1,1 +1,81 @@
-<p>gold-prices works!</p>
+<div class="gold-prices-container">
+  <div *ngIf="isLoading()" class="loader-wrapper">
+    <div class="spinner"></div>
+    <p>جاري تحميل أسعار الذهب...</p>
+  </div>
+
+  <div *ngIf="!isLoading()" class="prices-content">
+    <!-- Header Row -->
+    <div class="header-row">
+      <div class="col col-type">
+        <span class="header-icon">📋</span>
+        <span class="header-text">Type</span>
+      </div>
+      <div class="col col-bid">
+        <span class="header-icon">📉</span>
+        <span class="header-text">سعر الشراء</span>
+      </div>
+      <div class="col col-spread">
+        <span class="header-icon">↔</span>
+        <span class="header-text">Spread</span>
+      </div>
+      <div class="col col-ask">
+        <span class="header-icon">📈</span>
+        <span class="header-text"> Ask</span>
+      </div>
+      <div class="col col-change">
+        <span class="header-icon">📊</span>
+        <span class="header-text">Change</span>
+      </div>
+    </div>
+
+    <!-- Price Rows -->
+    <div *ngFor="let item of goldPrices()" class="price-row" [ngClass]="'purity-' + item.purity">
+      
+      <!-- Type Column -->
+      <div class="col col-type">
+        <div class="type-info">
+          <div class="icon-badge" [ngClass]="'icon-' + item.purity">
+          </div>
+          <div class="type-details">
+            <span class="gold-name">{{ item.nameEn }}</span>
+            <span class="subtitle">CURRENT PRICE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bid Column -->
+      <div class="col col-bid">
+        <div class="price-box bid-box">
+          <span class="price-value">{{ item.currentBuyPrice | number:'1.2-2' }}</span>
+          <span class="currency">EGP</span>
+        </div>
+      </div>
+
+      <!-- Spread Column -->
+      <div class="col col-spread">
+        <div class="price-box spread-box">
+          <span class="price-value">{{ (item.currentSellPrice - item.currentBuyPrice) | number:'1.2-2' }}</span>
+          <span class="currency">EGP</span>
+        </div>
+      </div>
+
+      <!-- Ask Column -->
+      <div class="col col-ask">
+        <div class="price-box ask-box">
+          <span class="price-value">{{ item.currentSellPrice | number:'1.2-2' }}</span>
+          <span class="currency">EGP</span>
+        </div>
+      </div>
+
+      <!-- Change Column -->
+      <div class="col col-change">
+        <div class="change-badge">
+          <span class="change-percent">+9.18%</span>
+          <span class="change-amount">+660.00</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

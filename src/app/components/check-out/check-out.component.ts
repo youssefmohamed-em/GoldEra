@@ -7,10 +7,12 @@ import { AuthService } from '../../services/auth.service';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { PaymentMethodsService } from '../../services/payment-methods.service';
 import { AddressService } from '../../services/address.service';
+import { Router } from '@angular/router';
+import { AddAddressComponent } from "../shared/add-address/add-address.component";
 
 @Component({
   selector: 'app-check-out',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AddAddressComponent],
   templateUrl: './check-out.component.html',
   styleUrl: './check-out.component.scss',
 })
@@ -22,6 +24,9 @@ export class CheckOutComponent implements OnInit {
   private fb = inject(FormBuilder);
   private paymentService = inject(PaymentMethodsService);
   private addressService = inject(AddressService);
+   private router = inject(Router);
+
+
 
   //--------------- signals --------------------
   cart = signal<CartItem[]>([]);
@@ -44,18 +49,35 @@ export class CheckOutComponent implements OnInit {
   selectedPaymentMethod = signal<any | null>(null);
   loadingPaymentMethods = signal(false);
   deliveryMethodsByZoneLoaded = signal(false); // ✅ تغيير المتغير
+  countries = signal<any[]>([]);
+loadingCountries = signal(false);
+states = signal<any[]>([]);
+cities = signal<any[]>([]);
+loadingStates = signal(false);
+loadingCities = signal(false);
+isPlacingOrder = signal(false);
+cartId = signal<number | null>(null);
+showAddressModal = signal(false);
 
-  addressForm = this.fb.group({
-    fullName: [''],
-    email: [''],
-    phone: [''],
-    street: [''],
-    country: [''],
-    state: [''],
-    city: [''],
-    postalCode: [''],
-    instructions: ['']
-  });
+
+
+  // ✅ Market Status & Agreement
+  isMarketOpen = signal(true);
+  agreePriceChange = signal(false);
+
+addressForm = this.fb.group({
+  fullName: [''],
+  email: [''],
+  phone: [''],
+  street: [''],
+
+  country: [null as number | null],
+  state: [null as number | null],
+  city: [null as number | null],
+
+  postalCode: [''],
+  instructions: ['']
+});
 
   ngOnInit() {
     const user = this.authService.getCurrentUser();
@@ -67,10 +89,29 @@ export class CheckOutComponent implements OnInit {
         phone: user.phone
       });
     }
+    
     this.cartService.loadCart();
     this.cart = this.cartService.cart;
     this.cartService.loadMarketStatus();
+    this.checkMarketStatus();
     this.loadPaymentMethods();
+  }
+
+  // ✅ جديد: فحص حالة السوق
+  checkMarketStatus() {
+    // يمكن الحصول على حالة السوق من الـ service
+    // للآن: نفترض أن السوق مفتوح في ساعات العمل
+    const now = new Date();
+    const hour = now.getHours();
+    
+    // السوق مفتوح من 11 AM إلى 11 PM
+    if (hour >= 11 && hour < 23) {
+      this.isMarketOpen.set(true);
+    } else {
+      this.isMarketOpen.set(false);
+    }
+    
+    console.log('Market Status:', this.isMarketOpen() ? 'Open' : 'Closed');
   }
 
   setMethod(method: 'delivery' | 'pickup') {
@@ -96,27 +137,122 @@ export class CheckOutComponent implements OnInit {
     return this.cart().reduce((sum, item) => sum + (item.totalPrice || 0), 0);
   }
 
-  placeOrder() {
-    if (!this.selectedMethod()) return;
+placeOrder() {
+  const address = this.selectedAddress();
+  const cartId = this.cartService.cartId();
+  const payment = this.selectedPaymentMethod();
 
-    if (this.selectedMethod() === 'pickup' && !this.selectedBranch()) {
-      alert('Please select a branch');
-      return;
-    }
+  if (!this.selectedMethod()) return;
+  if (this.selectedMethod() === 'pickup' && !this.selectedBranch()) return;
+  if (this.selectedMethod() === 'delivery' && !address) return;
+  if (!cartId) return;
+  if (!payment) return;
 
-    const order = {
-      items: this.cart(),
-      total: this.getTotal(),
-      method: this.selectedMethod(),
-      branch: this.selectedBranch(),
-      address: this.selectedAddress(),
-      paymentMethod: this.selectedPaymentMethod(),
-      deliveryMethod: this.selectedDeliveryMethod()
-    };
+  const orderPayload = {
+    cartId: cartId,
+    currency: 'EGP',
+    totalAmount: this.getTotal(),
+    lang: 'en',
+    returnUrl: 'https://gold-era.eg/profile#orders',
+    fulfillmentType:
+      this.selectedMethod() === 'delivery' ? 'DELIVERY' : 'PICKUP',
+    deliveryMethodId: this.selectedDeliveryMethod()?.id,
+    userAddressId: address.id,
+    paymentMethodId: payment.id
+  };
 
-    console.log('ORDER 👉', order);
+  const paymentName = payment?.nameEn?.toLowerCase();
+
+  // 🔥 Instapay
+  if (paymentName === 'instapay') {
+    this.createInstapayOrder(orderPayload);
+    return;
   }
 
+  // 🔥 Forsa (الحل المطلوب)
+  if (paymentName === 'forsa') {
+    this.createForsaOrder(orderPayload);
+    return;
+  }
+
+  // باقي الحالات
+  this.createNormalOrder(orderPayload);
+}
+
+createNormalOrder(payload: any) {
+  this.isPlacingOrder.set(true);
+
+  this.deliveryService.initOrder(payload).subscribe({
+    next: (res: any) => {
+      this.isPlacingOrder.set(false);
+
+      console.log('✅ Normal Order:', res);
+
+      const orderNumber = res?.orderNumber;
+
+      if (orderNumber) {
+       this.router.navigate(['/dashboard/orders', orderNumber]);
+      } else {
+        console.warn('⚠️ orderNumber not found');
+      }
+    },
+    error: (err) => {
+      console.error('❌ Error:', err);
+      this.isPlacingOrder.set(false);
+    }
+  });
+}
+initForsaOrder(payload: any) {
+  this.isPlacingOrder.set(true);
+
+  this.deliveryService.initOrder(payload).subscribe({
+    next: (res: any) => {
+      console.log('INIT ORDER 👉', res);
+
+      this.isPlacingOrder.set(false);
+
+      if (res?.paymentUrl) {
+        window.open(res.paymentUrl, '_blank'); // 👈 فتح صفحة خارجية
+       
+       this.router.navigate(['/dashboard/profile-orders'], {
+  fragment: 'orders'
+});
+       
+      } else {
+        console.warn('No payment URL returned');
+      }
+    },
+    error: (err) => {
+      console.error('INIT ORDER ERROR 👉', err);
+      this.isPlacingOrder.set(false);
+    }
+  });
+}
+createForsaOrder(payload: any) {
+  this.isPlacingOrder.set(true);
+
+  this.deliveryService.initOrder(payload).subscribe({
+    next: (res: any) => {
+      this.isPlacingOrder.set(false);
+
+      const url = res?.paymentUrl;
+
+      if (url) {
+        // 🔥 فتح خارجي فقط
+        window.open(url, '_blank');
+
+        // optional redirect بعد الفتح
+       this.router.navigate(['/dashboard/profile-orders']);
+      } else {
+        console.warn('⚠️ No paymentUrl for Forsa');
+      }
+    },
+    error: (err) => {
+      console.error('❌ Forsa Error:', err);
+      this.isPlacingOrder.set(false);
+    }
+  });
+}
   loadBranches() {
     this.loadingBranches.set(true);
 
@@ -156,17 +292,60 @@ export class CheckOutComponent implements OnInit {
       this.currentStep.update(step => step - 1);
     }
   }
+selectAddress(address: any) {
+  this.selectedAddress.set(address);
+}
+loadUserAddress() {
+  const user = this.authService.getCurrentUser();
 
-  loadUserAddress() {
-    this.authService.getUserAddresses().subscribe({
-      next: (res: any) => {
-        this.addresses.set(res || []);
-      },
-      error: (err) => {
-        console.error('Load addresses error', err);
-      }
-    });
+  if (!user?.id) {
+    console.error('❌ User ID not found');
+    return;
   }
+
+  this.addressService.getUserAddressesByUser(user.id).subscribe({
+    next: (res: any) => {
+      this.addresses.set(res || []);
+
+      // auto select default
+      if (res?.length) {
+        this.selectedAddress.set(
+          res.find((a: any) => a.isDefault) || res[0]
+        );
+      }
+
+      console.log('📍 Addresses loaded:', res);
+    },
+    error: (err) => {
+      console.error('❌ Load addresses error', err);
+    }
+  });
+}
+
+createInstapayOrder(payload: any) {
+  this.isPlacingOrder.set(true);
+
+  this.deliveryService.initOrder(payload).subscribe({
+    next: (res: any) => {
+      this.isPlacingOrder.set(false);
+
+      console.log('✅ Instapay Order:', res);
+
+      // 🔥 أهم نقطة
+      const orderNumber = res?.orderNumber;
+
+      if (orderNumber) {
+        this.router.navigate(['dashboard/orders', orderNumber]);
+      } else {
+        console.warn('⚠️ orderNumber not found');
+      }
+    },
+    error: (err) => {
+      console.error('❌ Error:', err);
+      this.isPlacingOrder.set(false);
+    }
+  });
+}
 
   isNextEnabled(): boolean {
     const step = this.currentStep();
@@ -198,10 +377,27 @@ export class CheckOutComponent implements OnInit {
     return false;
   }
 
-  selectPayment(method: any) {
-    this.selectedPaymentMethod.set(method);
-    this.paymentMethod.set(method.id);
+  // ✅ جديد: التحقق من إمكانية وضع الطلب
+  isPlaceOrderEnabled(): boolean {
+    const step = this.currentStep();
+    
+    // يجب أن نكون في Step 3
+    if (step !== 3) return false;
+
+    // إذا كان السوق مغلقاً، يجب الموافقة على تغيير السعر
+    if (!this.isMarketOpen() && !this.agreePriceChange()) {
+      return false;
+    }
+
+    return true;
   }
+
+selectPayment(method: any) {
+  this.selectedPaymentMethod.set(method);
+  this.paymentMethod.set(method.id);
+
+  this.onPaymentMethodChange(method.id);
+}
 
   loadDeliveryMethods() {
     this.loadingDeliveryMethods.set(true);
@@ -224,37 +420,56 @@ export class CheckOutComponent implements OnInit {
     });
   }
 
-  saveAddress() {
-    if (this.addressForm.invalid) return;
+ saveAddress() {
+  if (this.addressForm.invalid) return;
 
-    const form = this.addressForm.value;
+  const form = this.addressForm.value;
 
-    const payload = {
-      type: 'HOME',
-      fullName: form.fullName,
-      phone: form.phone,
-      street: form.street,
-      cityId: form.city,
-      stateId: form.state,
-      countryId: form.country,
-      postalCode: form.postalCode,
-      isDefault: false,
-      specialInstructions: form.instructions
-    };
+  const payload = {
+    type: 'HOME',
+    fullName: form.fullName || '',
+    phone: form.phone || '',
+    street: form.street || '',
 
-    this.authService.addUserAddress(payload).subscribe({
-      next: (res: any) => {
-        this.loadUserAddress();
-        this.selectedAddress.set(res);
-        this.showAddressForm.set(false);
-        this.addressForm.reset();
-      },
-      error: (err) => {
-        console.error('Add Address Error 👉', err);
-      }
-    });
-  }
+    cityId: Number(form.city),
+    stateId: Number(form.state),
+    countryId: Number(form.country),
 
+    postalCode: form.postalCode || '',
+    isDefault: false,
+    specialInstructions: form.instructions || ''
+  };
+
+  console.log('📦 Payload 👉', payload);
+
+  this.authService.addUserAddress(payload).subscribe({
+    next: (res: any) => {
+      this.loadUserAddress();
+      this.selectedAddress.set(res);
+      this.showAddressForm.set(false);
+      this.addressForm.reset();
+    },
+    error: (err) => {
+      console.error('❌ Add Address Error 👉', err);
+      console.log('FULL ERROR:', err.error);
+    }
+  });
+}
+
+onPaymentMethodChange(paymentId: number) {
+
+  console.log('💳 Selected Payment:', paymentId);
+
+  // مثال: كول API
+  this.paymentService.getPaymentMethods().subscribe({
+    next: (res) => {
+      console.log('🔁 Payment API called again:', res);
+    },
+    error: (err) => {
+      console.error('❌ Error:', err);
+    }
+  });
+}
   loadPaymentMethods() {
     this.loadingPaymentMethods.set(true);
 
@@ -312,4 +527,84 @@ export class CheckOutComponent implements OnInit {
       }
     });
   }
+  loadCountries() {
+  this.loadingCountries.set(true);
+
+  this.addressService.getCountries().subscribe({
+    next: (res: any) => {
+      this.countries.set(res.items || res || []);
+      this.loadingCountries.set(false);
+      console.log('Countries loaded 👉', this.countries());
+    },
+    error: (err) => {
+      console.error('Countries Error 👉', err);
+      this.loadingCountries.set(false);
+    }
+  });
+}
+openAddressForm() {
+  this.showAddressForm.set(true);
+
+  // مهم: نجيب countries أول ما يفتح الفورم
+  this.loadCountries();
+}
+
+onCountryChange(event: any) {
+  const countryId = Number(event.target.value);
+
+  if (!countryId) return;
+
+  this.loadStates(countryId);
+
+  // مهم جداً
+  this.addressForm.patchValue({
+    country: countryId
+  });
+}
+loadStates(countryId: number) {
+  this.loadingStates.set(true);
+
+  this.deliveryService.getStatesByCountry(countryId).subscribe({
+    next: (res: any) => {
+      this.states.set(res.items || res);
+      this.loadingStates.set(false);
+    },
+    error: (err) => {
+      console.error(err);
+      this.loadingStates.set(false);
+    }
+  });
+}
+onStateChange(event: any) {
+  const stateId = Number(event.target.value);
+
+  if (!stateId) return;
+
+  this.loadCities(stateId);
+
+  this.addressForm.patchValue({
+    state: stateId
+  });
+}
+loadCities(stateId: number) {
+  this.loadingCities.set(true);
+
+  this.deliveryService.getCitiesByState(stateId).subscribe({
+    next: (res: any) => {
+      this.cities.set(res.items || res);
+      this.loadingCities.set(false);
+    },
+    error: (err) => {
+      console.error(err);
+      this.loadingCities.set(false);
+    }
+  });
+}
+onCityChange(event: any) {
+  const cityId = Number(event.target.value);
+
+  this.addressForm.patchValue({
+    city: cityId
+  });
+}
 }

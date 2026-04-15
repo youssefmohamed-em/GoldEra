@@ -24,13 +24,38 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = auth.getToken();
 
-  const authReq = token
-    ? req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    : req;
+
+  // ✅ لو مفيش توكن
+  if (!token) {
+    auth.logout();
+    router.navigate(['/login']);
+    return next(req);
+  }
+
+  // ✅ لو التوكن منتهي
+  if (auth.isTokenExpired(token)) {
+    auth.logout();
+    router.navigate(['/login']);
+    return next(req);
+  }
+
+  const authReq = req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return next(authReq).pipe(
+    catchError((err: HttpErrorResponse) => {
+      if (err.status === 401) {
+        auth.logout();
+        router.navigate(['/login']);
+      }
+
+      return throwError(() => err);
+    })
+  );
+  
 
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
@@ -43,4 +68,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => err);
     })
   );
+
+
 };

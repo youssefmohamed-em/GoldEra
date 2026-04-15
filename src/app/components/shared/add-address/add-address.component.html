@@ -1,0 +1,59 @@
+<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+  <div class="bg-[#1a1a1a] border border-[#ffcc00] rounded-2xl p-6 w-[95%] md:w-[500px]">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-[#ffcc00] font-bold text-lg">Add New Address</h2>
+
+      <button (click)="close.emit()" class="text-gray-400 hover:text-white">
+        ✕
+      </button>
+    </div>
+
+    <!-- Form -->
+    <div class="space-y-3">
+
+      <input formControlName="fullName"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg text-white"
+        placeholder="Full Name" />
+
+      <input formControlName="phone"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg text-white"
+        placeholder="Phone" />
+
+      <input formControlName="street"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg text-white"
+        placeholder="Street" />
+
+      <input formControlName="postalCode"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg text-white"
+        placeholder="Postal Code" />
+
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-2 mt-5">
+
+      <button
+        (click)="close.emit()"
+        class="flex-1 bg-gray-700 py-2 rounded-lg">
+        Cancel
+      </button>
+
+      <button
+        (click)="save()"
+        class="flex-1 bg-[#ffcc00] text-black font-bold py-2 rounded-lg">
+        
+        @if (loading()) {
+          Saving...
+        } @else {
+          Save Address
+        }
+
+      </button>
+
+    </div>
+
+  </div>
+</div>

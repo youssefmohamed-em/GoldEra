@@ -1,0 +1,528 @@
+<div class="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 items-center">
+  
+  <div class="lg:col-span-5 flex items-center gap-6 p-4">
+    <div class="relative">
+      <div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#ffcc00] p-1 bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
+        <i class="pi pi-user text-5xl text-gray-600" style="font-size: 2.5rem;"></i>
+        </div>
+      <div class="absolute bottom-2 right-2 w-6 h-6 bg-[#00ffcc] border-4 border-[#0a0a0a] rounded-full"></div>
+    </div>
+
+    <div class="space-y-2">
+      <h1 class="text-3xl font-bold text-white tracking-tight">
+        {{ userOverview()?.firstName }} {{ userOverview()?.lastName }}
+      </h1>
+      <p class="text-gray-400 text-sm font-bold">{{ userOverview()?.email }}</p>
+      
+      <div class="flex items-center gap-2 bg-[#00ffcc22] border border-[#00ffcc44] w-fit px-3 py-1 rounded-full">
+        <i class="pi pi-check-circle text-[#00ffcc] text-xs"></i>
+        <span class="text-[#00ffcc] text-[10px] font-bold uppercase tracking-widest">Verified</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4">
+    
+    <div class="bg-[#1a1a1a] border border-gray-800 rounded-3xl p-6 flex items-center justify-center gap-6 relative overflow-hidden group hover:border-[#ffcc00] transition-all">
+      <div class="bg-[#ffcc00] p-4 rounded-2xl shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+        <i class="pi pi-shopping-bag text-black text-2xl font-bold"></i>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-black text-white leading-none">{{ userOverview()?.totalOrders || 0 }}</p>
+        <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest mt-1">Total Orders</p>
+      </div>
+    </div>
+
+    <div class="bg-[#1a1a1a] border border-gray-800 rounded-3xl p-6 flex items-center justify-center gap-6 relative overflow-hidden group hover:border-[#ffcc00] transition-all">
+      <div class="bg-[#ffcc00] p-4 rounded-2xl shadow-[0_0_15px_rgba(255,204,0,0.3)]">
+        <i class="pi pi-wallet text-black text-2xl font-bold"></i>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-black text-white leading-none">
+          EGP {{ userOverview()?.totalSpent | number:'1.2-2' }}
+        </p>
+        <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest mt-1">Total Spent</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="flex flex-wrap gap-2 mb-8 bg-[#111] p-2 rounded-xl border border-gray-800">
+  </div>
+  
+ <div class="flex flex-wrap gap-3 mb-8 bg-[#111] p-2 rounded-2xl border border-gray-800">
+
+  @for (tab of tabs; track tab.key) {
+   <button
+  (click)="selectTab(tab.key)"
+  class="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm md:text-base transition-all duration-300 border outline-none focus:outline-none"
+
+  [ngClass]="selectedTab() === tab.key 
+    ? 'bg-[#ffcc00] text-black border-[#ffcc00] shadow-[0_0_20px_rgba(255,204,0,0.6)] scale-105' 
+    : 'bg-[#1a1a1a] text-gray-400 border-gray-800 hover:border-[#ffcc00] hover:text-white hover:scale-105 hover:shadow-[0_0_12px_rgba(255,204,0,0.3)] focus:border-[#ffcc00] focus:shadow-[0_0_18px_rgba(255,204,0,0.5)]'"
+>
+
+  <!-- ICON -->
+  <i 
+    [class]="tab.icon"
+    class="text-sm transition-transform duration-300 group-hover:scale-110">
+  </i>
+
+  <!-- TEXT -->
+  <span class="font-semibold tracking-wide">
+    {{ tab.label }}
+  </span>
+
+</button>
+  }
+
+</div>
+
+  <div class="bg-[#111] rounded-2xl border border-gray-800 p-6">
+    
+    @if (selectedTab() === 'addresses') {
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-[#ffcc00] border-b-2 border-[#ffcc00] pb-1" (click)="showAddressModal.set(true)">Shipping Addresses</h2>
+       
+      </div>
+
+      @if (loading()) {
+        <div class="flex justify-center p-10"><span class="animate-pulse text-gray-500">Loading...</span></div>
+      }
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (address of addresses(); track address.id) {
+          <div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-5 relative group hover:border-[#ffcc00] transition-colors">
+           <div class="flex items-center justify-between mb-4">
+  
+  <!-- Left: Home -->
+  <div class="flex items-center gap-2 text-[#ffcc00]">
+    <i class="pi pi-home"></i>
+    <span class="font-bold uppercase tracking-wider text-xs">Home</span>
+  </div>
+
+  <!-- Right: DEFAULT badge (fixed position visually) -->
+  @if (address.isDefault) {
+    <div class="flex items-center justify-center">
+      <span class="text-[10px] px-2 py-1 rounded-full bg-[#ffcc00] text-black font-bold">
+        DEFAULT
+      </span>
+    </div>
+  }
+
+</div>
+
+            <div class="space-y-2 mb-6">
+              <h3 class="text-lg font-bold text-gray-100">{{ address.fullName }}</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
+                {{ address.street }}<br>
+                {{ address.city.nameEn }}, {{ address.state.nameEn }} 123<br>
+                Egypt
+              </p>
+              <div class="flex items-center gap-2 text-gray-300 text-sm mt-3">
+                <i class="pi pi-phone text-[#ffcc00] text-xs"></i>
+                {{ address.phone }}
+              </div>
+            </div>
+
+            <div class="bg-[#2a2614] border border-[#443d1a] rounded-lg p-2 mb-6 flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-[#ffcc00]"></div>
+              <span class="text-[#ffcc00] text-xs">testttto</span>
+            </div>
+
+            <div class="flex gap-2">
+            <button 
+  (click)="openEditAddress(address)" 
+  class="flex-1 bg-[#222] border border-gray-700 hover:bg-[#333] py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2">
+  <i class="pi pi-file-edit"></i> EDIT
+</button>
+              <button class="flex-1 bg-[#2d1a1a] border border-[#4d2626] text-red-500 hover:bg-[#3d1a1a] py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2"
+             (click)="confirmDeleteId.set(address.id!)">
+                <i class="pi pi-trash"></i> DELETE
+              </button>
+  <button 
+  (click)="setDefaultAddress(address)" 
+  class="group px-3 py-2 bg-transparent border border-gray-800 rounded-lg transition-all duration-300 focus:outline-none focus:ring-0 active:scale-90"
+>
+  <i 
+    class="pi pi-star-fill transition-all duration-300"
+    [ngClass]="address.isDefault 
+      ? 'text-[#ffcc00] drop-shadow-[0_0_8px_rgba(255,204,0,0.5)]' 
+      : 'text-gray-600 group-hover:text-gray-400'"
+  ></i>
+</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (selectedTab() === 'orders') {
+      <h2 class="text-2xl font-bold text-[#ffcc00] mb-6">Order History</h2>
+      <div class="space-y-4">
+     @for (order of orders(); track order.id) {
+  <div class="bg-[#1a1a1a] border border-gray-800 rounded-xl p-4 flex flex-wrap justify-between items-center">
+    
+    <div>
+      <p class="text-[#ffcc00] font-mono">#{{ order.orderNumber }}</p>
+      <p class="text-xs text-gray-500">{{ order.createdAt }}</p>
+    </div>
+
+    <div class="text-right flex items-center gap-3">
+
+      <div>
+        <span class="bg-[#222] text-[#ffcc00] px-3 py-1 rounded-full text-xs border border-gray-700">
+          {{ order.status }}
+        </span>
+        <p class="font-bold mt-1">{{ order.subtotal }} EGP</p>
+      </div>
+
+      <!-- ✅ VIEW DETAILS BUTTON -->
+      <button
+        (click)="openOrder(order)"
+        class="bg-[#ffcc00] text-black px-3 py-2 rounded-lg text-xs font-bold hover:scale-105 transition"
+      >
+        View Details
+      </button>
+
+    </div>
+
+  </div>
+}
+      </div>
+    }
+
+    @if (selectedTab() === 'personal') {
+       <h2 class="text-2xl font-bold text-[#ffcc00] mb-6">Personal Information</h2>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#1a1a1a] p-8 rounded-2xl border border-gray-800">
+          <div class="space-y-4">
+            <div>
+              <label class="text-gray-500 text-xs uppercase">Full Name</label>
+              <p class="text-lg font-semibold">{{ userProfile()?.firstName }} {{ userProfile()?.lastName }}</p>
+            </div>
+            <div>
+              <label class="text-gray-500 text-xs uppercase">Email Address</label>
+              <p class="text-lg font-semibold">{{ userProfile()?.email }}</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label class="text-gray-500 text-xs uppercase">Phone Number</label>
+              <p class="text-lg font-semibold">{{ userProfile()?.phone }}</p>
+            </div>
+            <div>
+              <label class="text-gray-500 text-xs uppercase">Nationality</label>
+              <p class="text-lg font-semibold">{{ userProfile()?.nationality }}</p>
+            </div>
+          </div>
+       </div>
+    }
+    
+  </div>
+  @if (selectedTab() === 'overview') {
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+    
+    <div class="lg:col-span-5 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-bold">Recent Orders</h3>
+        <button (click)="selectedTab.set('orders')" class="text-[#ffcc00] border border-[#ffcc00] px-3 py-1 rounded text-xs hover:bg-[#ffcc00] hover:text-black transition-all">
+          View All
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        @for (order of (userOverview()?.last3Orders ?? []); track order.id) {
+          <div class="bg-[#222] rounded-xl p-4 flex justify-between items-center border border-transparent hover:border-gray-700 transition-all">
+            <div class="space-y-1">
+              <p class="text-[#ffcc00] text-sm font-mono">#{{ order.orderNumber }}</p>
+              <p class="text-[10px] text-gray-500">{{ order.createdAt }}</p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-bold tracking-widest uppercase">{{ order.status }}</span>
+            </div>
+          </div>
+        } @empty {
+          <p class="text-gray-500 text-sm text-center py-10">No recent orders found.</p>
+        }
+      </div>
+    </div>
+
+    <div class="lg:col-span-3 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6">
+      <h3 class="text-lg font-bold mb-6">Quick Actions</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button (click)="selectedTab.set('personal')" class="bg-[#222] aspect-square rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-[#2a2a2a] transition-all border border-gray-800 group">
+          <i class="pi pi-user-edit text-[#ffcc00] text-xl group-hover:scale-110 transition-transform"></i>
+          <span class="text-[10px] font-bold uppercase">Edit Profile</span>
+        </button>
+        <button (click)="selectedTab.set('addresses')" class="bg-[#222] aspect-square rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-[#2a2a2a] transition-all border border-gray-800 group">
+          <i class="pi pi-map-marker text-[#ffcc00] text-xl group-hover:scale-110 transition-transform"></i>
+          <span class="text-[10px] font-bold uppercase">Addresses</span>
+        </button>
+       
+      </div>
+    </div>
+
+    <div class="lg:col-span-4 bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6">
+      <h3 class="text-lg font-bold mb-6">Account Summary</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center py-2 border-b border-gray-800/50">
+          <span class="text-gray-500 text-sm">Member Since</span>
+          <span class="text-[#ffcc00] font-semibold text-sm">{{ userProfile()?.createdAt | date:'MMM d, y' }}</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-gray-800/50">
+          <span class="text-gray-500 text-sm">Last Login</span>
+          <span class="text-[#ffcc00] font-semibold text-sm">{{ userProfile()?.lastLoginAt || 'Today' }}</span>
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-gray-500 text-sm">Account Status</span>
+          <span class="text-[#ffcc00] font-bold text-sm uppercase tracking-tighter">{{ userProfile()?.status || 'Active' }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+}
+
+
+</div>
+@if (isEditMode()) {
+<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+
+  <div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 w-[95%] md:w-[600px]">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-[#ffcc00] text-xl font-bold">Edit Address</h2>
+
+      <button (click)="isEditMode.set(false)" class="text-gray-400 hover:text-white">
+        ✕
+      </button>
+    </div>
+
+    <!-- FORM -->
+    <div class="space-y-3">
+
+      <input
+        [ngModel]="editForm().fullName"
+  (ngModelChange)="updateEditForm('fullName', $event)"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg"
+        placeholder="Full Name"
+      />
+
+      <input
+        [(ngModel)]="editForm().street"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg"
+        placeholder="Street"
+      />
+
+      <input
+        [(ngModel)]="editForm().phone"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg"
+        placeholder="Phone"
+      />
+
+      <input
+        [(ngModel)]="editForm().postalCode"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg"
+        placeholder="Postal Code"
+      />
+
+      <textarea
+        [(ngModel)]="editForm().specialInstructions"
+        class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded-lg"
+        placeholder="Special Instructions"
+      ></textarea>
+
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-2 mt-6">
+
+      <button
+        (click)="isEditMode.set(false)"
+        class="flex-1 bg-gray-700 py-2 rounded-lg"
+      >
+        Cancel
+      </button>
+
+      <button
+        (click)="saveAddressEdit()"
+        class="flex-1 bg-[#ffcc00] text-black font-bold py-2 rounded-lg"
+      >
+        Save Changes
+      </button>
+
+    </div>
+
+  </div>
+</div>
+}
+@if (confirmDeleteId()) {
+<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+
+  <div class="bg-[#1a1a1a] border border-red-900 rounded-2xl p-8 w-[90%] md:w-[400px] text-center shadow-[0_0_30px_rgba(255,0,0,0.2)]">
+
+    <!-- Icon -->
+    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
+      <i class="pi pi-exclamation-triangle text-red-500 text-2xl"></i>
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-xl font-bold text-white mb-2">
+      Delete Address?
+    </h2>
+
+    <!-- Description -->
+    <p class="text-gray-400 text-sm mb-6">
+      Are you sure you want to delete this address? This action cannot be undone.
+    </p>
+
+    <!-- Actions -->
+    <div class="flex gap-3">
+
+      <button
+        (click)="confirmDeleteId.set(null)"
+        class="flex-1 bg-[#222] border border-gray-700 py-2 rounded-lg text-sm font-bold hover:bg-[#333]">
+        Cancel
+      </button>
+
+      <button
+        (click)="handleDeleteConfirm()"
+        class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+        <i class="pi pi-trash"></i> Delete
+      </button>
+
+    </div>
+
+  </div>
+</div>
+}
+@if (showOrderDetails()) {
+<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 overflow-auto p-4">
+
+  <div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 w-full max-w-4xl">
+
+    <div class="flex justify-between items-start gap-6 mb-8 pb-6 border-b border-gray-800">
+      
+      <div class="flex items-start gap-4">
+        <img
+          [src]="selectedOrderDetails()?.cart?.cartItems?.[0]?.product?.imageUrl"
+          alt="product"
+          class="w-24 h-24 rounded-lg object-cover border border-gray-700"
+        />
+        
+        <div>
+          <h2 class="text-white text-lg font-bold mb-1">
+            {{ selectedOrderDetails()?.cart?.cartItems?.[0]?.product?.nameEn }}
+          </h2>
+          <p class="text-gray-400 text-sm mb-2">{{ selectedOrderDetails()?.cart?.cartItems?.[0]?.product?.sku }}</p>
+          <p class="text-gray-400 text-sm">{{ selectedOrderDetails()?.cart?.cartItems?.[0]?.product?.weight }}</p>
+          <p class="text-[#ffcc00] font-bold text-lg mt-2">
+            EGP {{ selectedOrderDetails()?.cart?.cartItems?.[0]?.totalPrice }}
+          </p>
+          <p class="text-gray-500 text-xs mt-1">EGP {{ selectedOrderDetails()?.subtotal }} × 1</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col items-end">
+        <button (click)="showOrderDetails.set(false)" class="text-gray-400 hover:text-white mb-3">
+          ✕
+        </button>
+        <p class="text-gray-400 text-sm">Order #{{ selectedOrderDetails()?.orderNumber }}</p>
+      </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+      <div class="bg-[#111] border border-gray-800 rounded-xl p-5">
+        <p class="text-gray-500 text-xs uppercase tracking-widest font-semibold">Payment Method:</p>
+        <p class="text-white font-semibold mt-3">
+          {{ selectedOrderDetails()?.paymentMethod }}
+        </p>
+      </div>
+
+      <div class="bg-[#111] border border-gray-800 rounded-xl p-5">
+        <p class="text-gray-500 text-xs uppercase tracking-widest font-semibold">Fulfillment Type:</p>
+        <p class="text-white font-semibold mt-3">
+          {{ selectedOrderDetails()?.fulfillmentType }}
+        </p>
+      </div>
+
+      <div class="bg-[#111] border border-gray-800 rounded-xl p-5">
+        <p class="text-gray-500 text-xs uppercase tracking-widest font-semibold">Shipping Address:</p>
+        <p class="text-white font-semibold text-sm mt-3">
+          {{ selectedOrderDetails()?.userAddress?.fullName }}
+        </p>
+        <p class="text-gray-400 text-xs mt-1">
+          {{ selectedOrderDetails()?.userAddress?.street }}
+        </p>
+        <p class="text-gray-400 text-xs">
+          {{ selectedOrderDetails()?.userAddress?.city?.nameEn }}, {{ selectedOrderDetails()?.userAddress?.state?.nameEn }}
+        </p>
+      </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+      <div class="bg-[#111] border border-gray-800 rounded-xl p-5">
+        <p class="text-gray-500 text-xs uppercase tracking-widest font-semibold">Order Date:</p>
+        <p class="text-white font-semibold mt-3">
+          {{ selectedOrderDetails()?.createdAt | date:'MMM d, yyyy, h:mm a' }}
+        </p>
+      </div>
+
+      <div class="bg-[#111] border border-gray-800 rounded-xl p-5">
+        <p class="text-gray-500 text-xs uppercase tracking-widest font-semibold">Confirmed Date:</p>
+        <p class="text-white font-semibold mt-3">
+          {{ selectedOrderDetails()?.confirmedAt | date:'MMM d, yyyy, h:mm a' }}
+        </p>
+      </div>
+
+    </div>
+
+    <div class="bg-[#111] border border-gray-800 rounded-xl p-5">
+
+      <div class="space-y-3">
+        
+        <div class="flex justify-between">
+          <span class="text-gray-400">Subtotal</span>
+          <span class="text-white font-semibold">EGP {{ selectedOrderDetails()?.subtotal }}</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-400">Shipping</span>
+          <span class="text-white font-semibold">EGP {{ selectedOrderDetails()?.shippingCost }}</span>
+        </div>
+
+        <div class="flex justify-between">
+          <span class="text-gray-400">Amount Paid</span>
+          <span class="text-[#ffcc00] font-bold">EGP {{ selectedOrderDetails()?.paidAmount }}</span>
+        </div>
+
+      </div>
+
+      <div class="border-t border-gray-700 mt-4 pt-4 flex justify-between items-center">
+        <span class="text-[#ffcc00] font-bold text-lg">Total</span>
+        <span class="text-[#ffcc00] font-black text-2xl">
+          EGP {{ selectedOrderDetails()?.paidAmount }}
+        </span>
+      </div>
+
+    </div>
+
+    <div class="mt-6">
+      <button (click)="showOrderDetails.set(false)" 
+              class="w-full bg-[#1a1a1a] border border-gray-700 text-gray-400 py-3 rounded-xl font-bold hover:bg-[#222] hover:text-white transition-all uppercase tracking-widest text-xs">
+        Hide Details
+      </button>
+    </div>
+
+  </div>
+  
+</div>
+
+}

@@ -1,0 +1,386 @@
+// ===== Variables =====
+$dark-bg-primary: #1a1a2e;
+$dark-bg-secondary: #16213e;
+$dark-bg-tertiary: #0f3460;
+$dark-border: #233449;
+
+$gold-primary: #ffc107;
+$gold-accent: #ffb300;
+
+$text-primary: #ffffff;
+$text-secondary: #b0b0b0;
+$text-tertiary: #808080;
+
+$danger-red: #e74c3c;
+$success-green: #27ae60;
+$info-blue: #3498db;
+
+$K24-color: #ffc107;
+$K21-color: #ff9800;
+$K18-color: #d4a574;
+
+// ===== Animations =====
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===== Main Container =====
+.gold-prices-container {
+  width: 100%;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #{$dark-bg-secondary} 0%, #{$dark-bg-primary} 100%);
+  border-radius: 12px;
+  animation: fadeIn 0.4s ease-in;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+// ===== Loader =====
+.loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba($gold-primary, 0.2);
+    border-top-color: $gold-primary;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+// ===== Header Row =====
+.header-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba($dark-bg-tertiary, 0.5);
+  border-radius: 8px;
+  border-bottom: 2px solid $dark-border;
+  margin-bottom: 0.5rem;
+
+  .col {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $gold-primary;
+    font-weight: 500;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .header-icon {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .header-text {
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+
+    .col { font-size: 12px; }
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 0.7fr 0.7fr 0.7fr 0.7fr;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+
+    .col { font-size: 11px; }
+    .header-icon { display: none; }
+  }
+}
+
+// ===== Price Rows =====
+.prices-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.price-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba($dark-bg-tertiary, 0.3);
+  border: 1px solid $dark-border;
+  border-radius: 8px;
+  align-items: center;
+  transition: all 0.3s ease;
+  animation: slideUp 0.4s ease-out;
+
+  &:hover {
+    background: rgba($dark-bg-tertiary, 0.5);
+    border-color: rgba($gold-primary, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  // Purity-specific borders
+  &.purity-K24 { border-left: 4px solid $K24-color; }
+  &.purity-K21 { border-left: 4px solid $K21-color; }
+  &.purity-K18 { border-left: 4px solid $K18-color; }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 0.7fr 0.7fr 0.7fr 0.7fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+}
+
+// ===== Type Column =====
+.col-type {
+  .type-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+
+    .icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+
+      &.icon-K24 { background: rgba($K24-color, 0.15); }
+      &.icon-K21 { background: rgba($K21-color, 0.15); }
+      &.icon-K18 { background: rgba($K18-color, 0.15); }
+
+      .purity-icon {
+        font-size: 24px;
+        line-height: 1;
+      }
+    }
+
+    .type-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+
+      .gold-name {
+        color: $text-primary;
+        font-weight: 600;
+        font-size: 15px;
+        white-space: nowrap;
+      }
+
+      .subtitle {
+        color: $text-tertiary;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .type-info {
+      gap: 0.75rem;
+
+      .icon-badge {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      .type-details {
+        .gold-name { font-size: 14px; }
+      }
+    }
+  }
+}
+
+// ===== Price Boxes =====
+.col-bid, .col-spread, .col-ask {
+  display: flex;
+  justify-content: center;
+}
+
+.price-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  min-width: 90px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  .price-value {
+    color: $text-primary;
+    font-weight: 600;
+    font-size: 15px;
+    font-family: 'Courier New', monospace;
+    line-height: 1.2;
+  }
+
+  .currency {
+    color: $text-secondary;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  &.bid-box {
+    background: rgba($danger-red, 0.1);
+    border: 1px solid rgba($danger-red, 0.2);
+
+    &:hover {
+      background: rgba($danger-red, 0.15);
+      border-color: rgba($danger-red, 0.3);
+    }
+
+    .price-value { color: #ff6b6b; }
+  }
+
+  &.spread-box {
+    background: rgba($info-blue, 0.1);
+    border: 1px solid rgba($info-blue, 0.2);
+
+    &:hover {
+      background: rgba($info-blue, 0.15);
+      border-color: rgba($info-blue, 0.3);
+    }
+
+    .price-value { color: $info-blue; }
+  }
+
+  &.ask-box {
+    background: rgba($success-green, 0.1);
+    border: 1px solid rgba($success-green, 0.2);
+
+    &:hover {
+      background: rgba($success-green, 0.15);
+      border-color: rgba($success-green, 0.3);
+    }
+
+    .price-value { color: #2ecc71; }
+  }
+
+  @media (max-width: 1024px) {
+    min-width: 75px;
+    padding: 0.6rem 0.75rem;
+
+    .price-value { font-size: 14px; }
+  }
+
+  @media (max-width: 768px) {
+    min-width: 60px;
+    padding: 0.5rem 0.5rem;
+
+    .price-value { font-size: 12px; }
+    .currency { font-size: 10px; }
+  }
+}
+
+// ===== Change Column =====
+.col-change {
+  display: flex;
+  justify-content: center;
+}
+
+.change-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: rgba($danger-red, 0.15);
+  border: 1px solid rgba($danger-red, 0.3);
+  border-radius: 6px;
+  min-width: 90px;
+
+  .change-percent {
+    color: $danger-red;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .change-amount {
+    color: rgba($danger-red, 0.7);
+    font-size: 11px;
+  }
+
+  @media (max-width: 768px) {
+    min-width: 70px;
+    padding: 0.5rem 0.5rem;
+
+    .change-percent { font-size: 12px; }
+    .change-amount { font-size: 10px; }
+  }
+}
+
+// ===== Responsive Tweaks =====
+@media (max-width: 480px) {
+  .gold-prices-container {
+    padding: 0.75rem;
+  }
+
+  .header-row, .price-row {
+    gap: 0.25rem;
+  }
+
+  .price-box {
+    min-width: 50px;
+    padding: 0.4rem 0.3rem;
+
+    .price-value { font-size: 11px; }
+  }
+
+  .change-badge {
+    min-width: 50px;
+    padding: 0.4rem 0.3rem;
+
+    .change-percent { font-size: 11px; }
+  }
+}

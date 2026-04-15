@@ -39,6 +39,7 @@ loading = signal (false);
 cartCount = signal(0);
 cartVisible = signal(false);
 marketOpen = signal<boolean | null>(null);
+cartId = signal<number | null>(null);
 
 private get baseUrl(){
     return  `${this.config.baseUrl}/public/cart-items`;
@@ -63,17 +64,23 @@ loadProductTypes() {
     });
 }
  loadCart() {
-    this.loading.set(true);
+  this.loading.set(true);
 
-    this.http.get<CartItem[]>(`${this.baseUrl}`).subscribe({
-      next: (res) => {
-        this.cart.set(res);
-        this.loading.set(false);
-         this.updateCount(res); // ✅ مهم جدًا
-      },
-      error: () => this.loading.set(false)
-    });
-  }
+  this.http.get<CartItem[]>(`${this.baseUrl}`).subscribe({
+    next: (res) => {
+      this.cart.set(res);
+
+      // ✅ IMPORTANT FIX
+      if (res.length > 0) {
+        this.cartId.set(res[0].cartId);
+      }
+
+      this.updateCount(res);
+      this.loading.set(false);
+    },
+    error: () => this.loading.set(false)
+  });
+}
 addToCart(productId: number, quantity: number = 1): Observable<CartItem> {
   return this.http.post<CartItem>(`${this.baseUrl}/add`, {
     productId,
@@ -148,5 +155,6 @@ loadMarketStatus(): Observable<{ key: string; value: string }> {
     `${this.config.baseUrl}/public/settings/marketStatus`
   );
 }
+
 
 }
