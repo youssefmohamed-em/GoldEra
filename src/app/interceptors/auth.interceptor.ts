@@ -11,32 +11,27 @@ import { throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (
-    req.url.includes('/login') ||
-    req.url.includes('/register')
-  ) {
+  if (req.url.includes('/login') || req.url.includes('/register')) {
     return next(req);
   }
 
   const token = auth.getToken();
 
-
-  // ✅ لو مفيش توكن
+  // ❌ no token → stop request
   if (!token) {
     auth.logout();
     router.navigate(['/login']);
-    return next(req);
+    return throwError(() => new Error('No token'));
   }
 
-  // ✅ لو التوكن منتهي
+  // ❌ expired token → stop request
   if (auth.isTokenExpired(token)) {
     auth.logout();
     router.navigate(['/login']);
-    return next(req);
+    return throwError(() => new Error('Expired token'));
   }
 
   const authReq = req.clone({
@@ -55,19 +50,4 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => err);
     })
   );
-  
-
-  return next(authReq).pipe(
-    catchError((err: HttpErrorResponse) => {
-
-      if (err.status === 401) {
-        auth.logout();
-        router.navigate(['/login']); // 🔥 هنا التحويل المباشر
-      }
-
-      return throwError(() => err);
-    })
-  );
-
-
 };

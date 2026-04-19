@@ -2,10 +2,10 @@
   
   <div class="flex flex-col gap-6">
     <div class="flex justify-between items-center">
-      <h3 class="text-white text-lg font-medium">Live Trading Dashboard</h3>
+      <h3 class="text-white text-lg font-medium">{{ t('LIVE_DASHBOARD') }}</h3>
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-        <span class="text-green-500 text-xs">Live</span>
+        <span class="text-green-500 text-xs"> {{ t('LIVE') }}</span>
       </div>
     </div>
 
@@ -14,7 +14,7 @@
     </div>
 
     <div class="text-center">
-      <p class="text-gray-500 text-xs uppercase tracking-widest">Gold Price Trends (18K, 24K, 21K)</p>
+      <p class="text-gray-500 text-xs uppercase tracking-widest"> {{ t('CHART_TITLE') }}</p>
     </div>
 
     <div class="h-[300px] w-full">
@@ -36,7 +36,7 @@
     <circle cx="12" cy="12" r="3"/>
   </svg>
 
-  View Live Prices
+  {{ t('VIEW_PRICES') }}
 </button>
 
   </div>

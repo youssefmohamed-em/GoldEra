@@ -1,81 +1,87 @@
-<div class="gold-prices-container">
-  <div *ngIf="isLoading()" class="loader-wrapper">
-    <div class="spinner"></div>
-    <p>جاري تحميل أسعار الذهب...</p>
-  </div>
+<div class="page-fade-in">
+  <!-- كل الصفحة هنا -->
 
-  <div *ngIf="!isLoading()" class="prices-content">
-    <!-- Header Row -->
-    <div class="header-row">
-      <div class="col col-type">
-        <span class="header-icon">📋</span>
-        <span class="header-text">Type</span>
-      </div>
-      <div class="col col-bid">
-        <span class="header-icon">📉</span>
-        <span class="header-text">سعر الشراء</span>
-      </div>
-      <div class="col col-spread">
-        <span class="header-icon">↔</span>
-        <span class="header-text">Spread</span>
-      </div>
-      <div class="col col-ask">
-        <span class="header-icon">📈</span>
-        <span class="header-text"> Ask</span>
-      </div>
-      <div class="col col-change">
-        <span class="header-icon">📊</span>
-        <span class="header-text">Change</span>
-      </div>
+
+<div class="text-center space-y-2 mb-6">
+  
+  <h1 class="text-5xl text-yellow-600 font-bold">
+    Live Gold Prices
+  </h1>
+
+  <p class="text-2xl text-gray-200">
+    Real-time updates of gold prices in the global market
+  </p>
+
+  <div class="flex items-center justify-center gap-2 pt-2">
+    
+    <!-- green dot -->
+    <span class="relative flex h-3 w-3">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+    </span>
+
+    <!-- live text -->
+    <span class="text-green-400 font-semibold text-sm">
+      LIVE
+    </span>
+
+    <!-- time ago -->
+    <span class="text-gray-400 text-sm">
+      • {{ timeAgo() }}
+    </span>
+
+  </div>
+</div>
+ 
+ <div class="gold-prices-container">
+    <div class="header-row grid-row">
+      <div class="col-type">TYPE</div>
+      <div class="col-center">BID</div>
+      <div class="col-center">SPREAD</div>
+      <div class="col-center">ASK</div>
+      <div class="col-right">CHANGE</div>
     </div>
 
-    <!-- Price Rows -->
-    <div *ngFor="let item of goldPrices()" class="price-row" [ngClass]="'purity-' + item.purity">
+<div class="cards-wrapper"> 
+    <div *ngFor="let item of goldPrices()" class="price-card grid-row">
       
-      <!-- Type Column -->
-      <div class="col col-type">
-        <div class="type-info">
-          <div class="icon-badge" [ngClass]="'icon-' + item.purity">
-          </div>
-          <div class="type-details">
-            <span class="gold-name">{{ item.nameEn }}</span>
-            <span class="subtitle">CURRENT PRICE</span>
-          </div>
+      <div class="col-type">
+        <div class="icon-badge" [ngClass]="'purity-' + item.purity">
+          <i class="pi pi-briefcase"></i> </div>
+        <div class="type-details">
+          <span class="gold-name">{{ item.nameEn }}</span>
+          <span class="subtitle">CURRENT PRICE</span>
         </div>
       </div>
 
-      <!-- Bid Column -->
-      <div class="col col-bid">
-        <div class="price-box bid-box">
+      <div class="col-center">
+        <div class="price-box bid-bg">
           <span class="price-value">{{ item.currentBuyPrice | number:'1.2-2' }}</span>
           <span class="currency">EGP</span>
         </div>
       </div>
 
-      <!-- Spread Column -->
-      <div class="col col-spread">
-        <div class="price-box spread-box">
+      <div class="col-center">
+        <div class="price-box spread-bg">
           <span class="price-value">{{ (item.currentSellPrice - item.currentBuyPrice) | number:'1.2-2' }}</span>
           <span class="currency">EGP</span>
         </div>
       </div>
 
-      <!-- Ask Column -->
-      <div class="col col-ask">
-        <div class="price-box ask-box">
+      <div class="col-center">
+        <div class="price-box ask-bg">
           <span class="price-value">{{ item.currentSellPrice | number:'1.2-2' }}</span>
           <span class="currency">EGP</span>
         </div>
       </div>
 
-      <!-- Change Column -->
-      <div class="col col-change">
-        <div class="change-badge">
-          <span class="change-percent">+9.18%</span>
-          <span class="change-amount">+660.00</span>
+      <div class="col-right">
+        <div class="change-badge positive">
+          <span class="percent">+0.83%</span>
+          <span class="amount">+60.00</span>
         </div>
       </div>
-
     </div>
   </div>
-</div>
+  </div>
+  </div>

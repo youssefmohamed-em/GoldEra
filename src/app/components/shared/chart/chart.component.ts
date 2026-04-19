@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { ChartsService } from '../../../services/charts.service';
 import { ChartModule } from 'primeng/chart';
+import { TranslateService } from '../../../services/translate.service';
 
 @Component({
   selector: 'app-chart',
@@ -13,6 +14,7 @@ import { ChartModule } from 'primeng/chart';
 export class ChartComponent {
 
   private chartsService = inject(ChartsService);
+  private translate = inject(TranslateService);
 
   data = signal<any>(null);
   options = signal<any>(null);
@@ -127,7 +129,7 @@ loadChart() {
 
   });
 }
-
+t = (key: any) => this.translate.translate(key);
 scrollToPrices() {
   document.getElementById('prices')?.scrollIntoView({
     behavior: 'smooth',

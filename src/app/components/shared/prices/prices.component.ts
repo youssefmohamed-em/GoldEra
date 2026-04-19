@@ -3,6 +3,7 @@ import { RouterModule } from "@angular/router";
 import { Price, PricesService } from '../../../services/prices.service';
 import { DatePipe } from '@angular/common'; 
 import { Router } from '@angular/router';
+import { TranslateService } from '../../../services/translate.service';
 
 @Component({
   selector: 'app-prices',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 export class PricesComponent {
 
   private pricesService = inject(PricesService);
+  private translate = inject(TranslateService);
 private router = inject(Router);
   prices = signal<Price[]>([]);
   loading = signal(false);
@@ -20,7 +22,9 @@ private router = inject(Router);
 constructor() {
 this.loadPrices();
 }
-
+t(key: string) {
+  return this.translate.translate(key);
+}
  loadPrices() {
     this.loading.set(true);
     this.error.set(null);

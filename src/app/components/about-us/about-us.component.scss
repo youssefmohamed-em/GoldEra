@@ -1,0 +1,17 @@
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-100 {
+  opacity: 1;
+  transition: all 0.8s ease;
+}
+
+.translate-y-10 {
+  transform: translateY(40px);
+}
+
+.translate-y-0 {
+  transform: translateY(0);
+  transition: all 0.8s ease;
+}

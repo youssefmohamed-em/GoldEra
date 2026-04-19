@@ -46,8 +46,19 @@ export class BranchesService {
   private http = inject(HttpClient);
   private config = inject(ConfigService);
 
+  
+
    getBranches(): Observable<Branch[]> {
-    return this.http.get<Branch[]>(`${this.config.baseUrl}/public/branches`);
+    return this.http.get<Branch[]>(`${this.config.deliveryUrl}/public/branches`);
   }
+
+  getPickupBranches(): Observable<Branch[]> {
+  let headers = new HttpHeaders(  {  'x-merchant': 'GOLDERA-ECOM'}
+);
+  
+  return this.http.get<Branch[]>(
+    `${this.config.deliveryUrl}/api/branches/all` , {headers}
+  );
+}
 
 }

@@ -35,22 +35,21 @@
 <div class="mt-16 fade-in-up" style="animation-delay: 0.6s">
 
   <h1 class="text-center text-yellow-600 font-bold text-5xl">
-    live gold prices
+   {{t('LIVE_GOLD')}}
   </h1>
 
   <h3 class="text-center text-white text-2xl mt-3">
-    Real-time pricing updated every second
-  </h3>
+{{t('LIVE_DESC')}}  </h3>
 
   <div id="prices" class="mt-6">
     <app-prices></app-prices>
   </div>
 <div>
-<h1 class="text-center text-yellow-600 text-4xl font-bold"> Why Choose Goldera  ?</h1>
+<h1 class="text-center text-yellow-600 text-4xl font-bold"> {{t('WHY_GOLDERA')}}</h1>
 
 <div class="bg-[#101010] p-8 md:p-12">
   
-  <h2 class="text-3xl font-semibold text-center text-white mb-12">Why Choose Goldera?</h2>
+  <h2 class="text-3xl font-semibold text-center text-white mb-12">{{t('WHY_GOLDERA')}}</h2>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
     
@@ -78,11 +77,11 @@
 </div>
 
         <h3 class="text-xl font-medium text-[#FBBD07] mb-5 text-center px-4">
-          {{ card.title }}
+          {{ t(card.title) }}
         </h3>
 
         <p class="text-sm text-gray-300 text-center leading-relaxed">
-          {{ card.description }}
+          {{ t(card.description) }}
         </p>
 
       </div>
@@ -96,8 +95,8 @@
 
 </div>
   <div class="bg-white text-center "> 
-    <h1 class="text-yellow-600 text-3xl font-bold"> Our Best Selling</h1>
-    <h1 class="text-gray-300 text-xl ">Our Gold products section</h1>
+    <h1 class="text-yellow-600 text-3xl font-bold"> {{t('BEST_SELLING')}}</h1>
+    <h1 class="text-gray-300 text-xl ">{{t('PRODUCTS_SECTION')}}</h1>
     <br>
     <app-product-categories></app-product-categories>
   </div>

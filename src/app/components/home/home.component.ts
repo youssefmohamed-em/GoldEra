@@ -9,43 +9,48 @@ import { PricesComponent } from "../shared/prices/prices.component";
 import { ProductCategoriesComponent } from "../shared/product-categories/product-categories.component";
 import { CartComponent } from "../cart/cart.component";
 import { CartItemService } from '../../services/cart-item.service';
+import { FooterComponent } from "../shared/footer/footer.component";
+import { StreamService } from '../../services/stream.service';
+import { TranslateService } from '../../services/translate.service';
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, HeroComponent, StatsComponent, ChartComponent, PricesComponent, ProductCategoriesComponent, ],
+  imports: [RouterModule, HeroComponent, StatsComponent, ChartComponent, PricesComponent, ProductCategoriesComponent, FooterComponent],
   templateUrl: './home.component.html',
   standalone: true,
   styleUrl: './home.component.scss',
 })
 export class HomeComponent  implements OnInit{
+  private streamService = inject(StreamService);
+  private translate =  inject(TranslateService);
 cardData = [
-    {
-      title: 'Bank-Level Security',
-      description: '256-bit SSL encryption, cold storage, and multi-factor authentication protect your investments',
-      // SVG الخاص بأيقونة الدرع
-icon: 'pi pi-shield'   
- },
-    {
-      title: '24/7 Real-Time Support',
-      description: 'Get assistance anytime, day or night, with instant responses and real-time guidance whenever you need it.',
-      // SVG الخاص بأيقونة الساعة
-      icon: 'pi pi-clock'
-    },
-    {
-      title: 'Certified Pure Gold',
-      description: 'All products certified by Assay and Weights Authority',
-      // SVG الخاص بأيقونة النجمة/الشهادة
-       icon: 'pi pi-star'
-    },
-    {
-      title: 'Secure Delivery',
-      description: 'Insured delivery to your doorstep or secure vault storage across Egypt',
-      // SVG الخاص بأيقونة الشاحنة
-      icon: 'pi pi-truck'
-    },
-  ];
+  {
+    title: 'CARD_SECURITY_TITLE',
+    description: 'CARD_SECURITY_DESC',
+    icon: 'pi pi-shield'
+  },
+  {
+    title: 'CARD_SUPPORT_TITLE',
+    description: 'CARD_SUPPORT_DESC',
+    icon: 'pi pi-clock'
+  },
+  {
+    title: 'CARD_CERTIFIED_TITLE',
+    description: 'CARD_CERTIFIED_DESC',
+    icon: 'pi pi-star'
+  },
+  {
+    title: 'CARD_DELIVERY_TITLE',
+    description: 'CARD_DELIVERY_DESC',
+    icon: 'pi pi-truck'
+  }
+];
   private cartService = inject(CartItemService);
 
 ngOnInit(): void {
   this.cartService.loadMarketStatus();
+}
+
+t(key: string) {
+  return this.translate.translate(key);
 }
 }

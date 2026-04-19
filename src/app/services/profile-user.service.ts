@@ -94,7 +94,7 @@ export class ProfileUserService {
       `${this.baseUrl}/protected/user-addresses/${userId}/by-user`
     );
   }
-getUserOverview(userId: number): Observable<PagedResponse<any>> {
+getUserOverview(userId: number): Observable<any> {
   return this.http.get<PagedResponse<any>>(
     `${this.baseUrl}/protected/user-profiles/${userId}/overview`
   );

@@ -1,4 +1,5 @@
 {
   "baseUrl": "https://dhabk-api-uat.79-pay.com/goldera",
-  "uploadUrl": "upload/gcp"
+  "uploadUrl": "upload/gcp",
+    "deliveryUrl":"https://dhabk-api-uat.79-pay.com/secure/delivery-service"  
 }

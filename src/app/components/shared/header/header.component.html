@@ -1,134 +1,126 @@
-<nav class="bg-black text-white px-6 py-4 flex items-center justify-between">
+<nav class="bg-black text-white px-4 md:px-10 py-3 flex items-center shadow-2xl sticky top-0 z-[100]">
 
-  <!-- Logo -->
-  <a routerLink="/home" class="flex items-center gap-2">
-    <img src="logo.png" alt="logo" class="h-10 w-auto">
-  </a>
-
-  <!-- Links -->
-  <div class="hidden md:flex items-center gap-6">
-    <a routerLink="/dashboard/home" routerLinkActive="bg-yellow-500 text-black"
-      class="relative px-4 py-2 rounded-md font-semibold text-white transition-all duration-300 hover:bg-yellow-600 hover:text-black">Home</a>
-    <a routerLink="/dashboard/about-us" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
-          transition-all duration-300 
-          hover:bg-yellow-600 hover:text-black 
-          after:content-[''] after:absolute after:left-0 after:bottom-0 
-          after:h-[2px] after:w-full after:bg-yellow-500 
-          after:origin-left after:scale-x-0 
-          hover:after:scale-x-100 
-          after:transition-transform after:duration-300">
-      About Us
-    </a>
-
-    <a routerLink="/dashboard/gold-prices" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
-          transition-all duration-300 
-          hover:bg-yellow-600 hover:text-black 
-          after:content-[''] after:absolute after:left-0 after:bottom-0 
-          after:h-[2px] after:w-full after:bg-yellow-500 
-          after:origin-left after:scale-x-0 
-          hover:after:scale-x-100 
-          after:transition-transform after:duration-300">
-      Gold Prices
-    </a>
-
-    <a routerLink="/dashboard/products" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
-          transition-all duration-300 
-          hover:bg-yellow-600 hover:text-black 
-          after:content-[''] after:absolute after:left-0 after:bottom-0 
-          after:h-[2px] after:w-full after:bg-yellow-500 
-          after:origin-left after:scale-x-0 
-          hover:after:scale-x-100 
-          after:transition-transform after:duration-300">
-      Shop
-    </a>
-
-    <a routerLink="/dashboard/making-charges" routerLinkActive="bg-yellow-500 text-black" class="relative px-4 py-2 rounded-md font-semibold text-white 
-          transition-all duration-300 
-          hover:bg-yellow-600 hover:text-black 
-          after:content-[''] after:absolute after:left-0 after:bottom-0 
-          after:h-[2px] after:w-full after:bg-yellow-500 
-          after:origin-left after:scale-x-0 
-          hover:after:scale-x-100 
-          after:transition-transform after:duration-300">
-      Making Charges
+  <div class="flex-none">
+    <a routerLink="/home" class="flex-shrink-0 transition-transform hover:scale-105">
+      <img src="logo.png" class="h-8 md:h-11 w-auto" />
     </a>
   </div>
 
-  <!-- Right buttons -->
-  <div class="flex items-center gap-3">
+  <div class="flex flex-1 justify-center items-center gap-8 xl:gap-12">
+    
+    <div class="hidden lg:flex items-center gap-1 xl:gap-2">
+      @let navLinks = [
+        { path: '/dashboard/home', label: 'HOME' },
+        { path: '/dashboard/about-us', label: 'ABOUT_US' },
+        { path: '/dashboard/gold-prices', label: 'GOLD_PRICES' },
+        { path: '/dashboard/products', label: 'SHOP' },
+        { path: '/dashboard/making-charges', label: 'MAKING_CHARGES' }
+      ];
 
-    <button (click)="toggleLanguage()"
-      class="border border-white px-3 py-1 rounded hover:bg-white hover:text-black transition">
-      {{ currentLang }}
-    </button>
+      @for (link of navLinks; track link.path) {
+        <a [routerLink]="link.path" 
+           routerLinkActive="text-yellow-500 bg-yellow-500/10 font-bold"
+           class="px-4 py-2 rounded-full text-[13px] font-medium hover:text-yellow-500 transition-all duration-300">
+          {{ t(link.label) }}
+        </a>
+      }
+    </div>
 
-    <button class="bg-yellow-400 text-black px-4 py-1 rounded font-semibold hover:bg-yellow-500 transition">
-      Get Started
-    </button>
+    <div class="flex items-center gap-4 border-l border-gray-800 pl-8">
+      
+      <button (click)="toggleLanguage()"
+        class="bg-[#111] hover:bg-yellow-500 hover:text-black border border-gray-800 text-yellow-500 w-9 h-9 rounded-full transition-all duration-500 flex items-center justify-center">
+        <i class="pi pi-globe text-sm"></i>
+      </button>
 
-  <button
-  class="md:hidden w-8 h-8 flex flex-col justify-center items-center gap-[6px]"
-  (click)="toggleMenu()"
->
-  <!-- Top line -->
-  <span
-    class="block w-6 h-[3px] bg-white transition-all duration-300 origin-center"
-    [ngClass]="{
-      'rotate-45 translate-y-[6px]': isMenuOpen
-    }">
-  </span>
+      <div class="relative">
+        <button (click)="toggleUserMenu($event)"
+          class="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-4 py-2 rounded-full font-bold hover:shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all duration-300">
+          <i class="pi pi-user text-sm"></i>
+          <span class="hidden sm:inline text-[11px]">{{ userFirstName() || 'Guest' }}</span>
+          <i class="pi pi-chevron-down text-[10px]" [class.rotate-180]="isUserMenuOpen()"></i>
+        </button>
 
-  <!-- Middle line -->
-  <span
-    class="block w-6 h-[3px] bg-white transition-all duration-300"
-    [ngClass]="{
-      'opacity-0': isMenuOpen
-    }">
-  </span>
+        @if (isUserMenuOpen()) {
+          <div class="absolute right-0 mt-4 w-72 bg-[#0f0f0f] border border-gray-800 rounded-2xl z-50 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
+            <div class="p-5 bg-gradient-to-b from-[#1a1a1a] to-transparent border-b border-gray-800/50">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold">
+                  {{ (userFirstName() || 'G').charAt(0).toUpperCase() }}
+                </div>
+                <div class="overflow-hidden text-left">
+                  <p class="font-bold text-sm text-white truncate">{{ userFirstName() || 'Guest' }}</p>
+                  <p class="text-gray-500 text-[11px] truncate">{{ userEmail() }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="p-2">
+              <button (click)="navigateTo('personal')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-xl transition-all text-left">
+                <i class="pi pi-user text-gray-400"></i> <span class="text-sm text-gray-200">{{t('MY_PROFILE')}}</span>
+              </button>
+              <button (click)="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl mt-1 text-left">
+                <i class="pi pi-power-off text-sm"></i> <span class="text-sm font-semibold">{{t('LOGOUT')}}</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
 
-  <!-- Bottom line -->
-  <span
-    class="block w-6 h-[3px] bg-white transition-all duration-300 origin-center"
-    [ngClass]="{
-      '-rotate-45 -translate-y-[6px]': isMenuOpen
-    }">
-  </span>
-</button>
+      <button class="lg:hidden text-2xl text-yellow-600" (click)="toggleMenu()">
+        <i class="pi pi-bars"></i>
+      </button>
+    </div>
 
   </div>
 </nav>
+ @if (showLogoutModal()) {
+    <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
 
-<!-- Mobile Menu (Animated) -->
-<div
-  class="md:hidden bg-black text-white px-6 overflow-hidden transition-all duration-500 ease-in-out"
-  [ngClass]="{
-    'max-h-96 py-4 opacity-100': isMenuOpen,
-    'max-h-0 py-0 opacity-0': !isMenuOpen
-  }">
+      <div class="bg-[#1a1a1a] p-6 rounded-2xl w-full max-w-sm">
 
-  <a routerLink="/dashboard/home" (click)="closeMenu()"
-    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
-    Home
-  </a>
+        <h2 class="text-lg font-semibold mb-3">{{t('CONFIRM_LOGOUT')}}</h2>
 
-  <a routerLink="/dashboard/about-us" (click)="closeMenu()"
-    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
-    About Us
-  </a>
+        <p class="text-gray-400 mb-6">{{t('LOG_OUT_SURE')}}</p>
 
-  <a routerLink="/dashboard/gold-prices" (click)="closeMenu()"
-    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
-    Gold Prices
-  </a>
+        <div class="flex justify-end gap-3">
 
-  <a routerLink="/dashboard/shop" (click)="closeMenu()"
-    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
-    Shop
-  </a>
+          <button (click)="cancelLogout()" class="px-4 py-2 bg-gray-800 rounded-xl">
+            {{t('CANCEL')}}
+          </button>
 
-  <a routerLink="/dashboard/making-charges" (click)="closeMenu()"
-    class="block px-4 py-2 rounded-md transition hover:bg-yellow-500 hover:text-black">
-    Making Charges
-  </a>
+          <button (click)="confirmLogout()" class="px-4 py-2 bg-red-600 rounded-xl">
+            {{t('LOGOUT')}}
+          </button>
 
-</div>
+        </div>
+
+      </div>
+
+    </div>
+  }
+  @if (isMenuOpen()) {
+  <div class="lg:hidden bg-black text-white px-6 py-4 border-t border-gray-800 animate-in slide-in-from-top">
+
+    @let navLinks = [
+      { path: '/dashboard/home', label: 'HOME' },
+      { path: '/dashboard/about-us', label: 'ABOUT_US' },
+      { path: '/dashboard/gold-prices', label: 'GOLD_PRICES' },
+      { path: '/dashboard/products', label: 'SHOP' },
+      { path: '/dashboard/making-charges', label: 'MAKING_CHARGES' }
+    ];
+
+    <div class="flex flex-col gap-2">
+
+      @for (link of navLinks; track link.path) {
+        <a [routerLink]="link.path"
+           (click)="closeMenu()"
+           routerLinkActive="text-yellow-500 bg-yellow-500/10 font-bold"
+           class="px-4 py-3 rounded-xl text-sm hover:bg-white/5 transition">
+          {{ t(link.label) }}
+        </a>
+      }
+
+    </div>
+
+  </div>
+}

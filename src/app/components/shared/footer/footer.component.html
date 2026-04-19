@@ -1,1 +1,160 @@
-<p>footer works!</p>
+<footer class="bg-[#0a0a0a] text-gray-300 border-t border-gray-800 mt-10">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+      <!-- Brand -->
+      <div>
+        <h3 class="text-white text-2xl font-bold mb-4">
+          <img src="logo.png" alt=""  class="w-20 h-auto">
+        </h3>
+        <p class="text-sm text-gray-400 leading-6">
+          Real-time gold price tracking platform with live updates, charts, and market insights.
+        </p>
+      </div>
+
+      <!-- Links -->
+      <div>
+        <h3 class="text-white font-semibold mb-4">Quick Links</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a routerLink="/home" class="hover:text-yellow-500 transition">Home</a></li>
+          <li><a routerLink="/dashboard" class="hover:text-yellow-500 transition">Dashboard</a></li>
+          <li><a routerLink="/markets" class="hover:text-yellow-500 transition">Markets</a></li>
+          <li><a routerLink="/news" class="hover:text-yellow-500 transition">News</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <h3 class="text-white font-semibold mb-4">Support</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-yellow-500 transition">Help Center</a></li>
+          <li>
+            <a href="https://api.whatsapp.com/send?phone=201069311811" target="_blank"
+              class="hover:text-yellow-500 transition">
+              Contact Us
+            </a>
+          </li>
+          <li><a href="#" class="hover:text-yellow-500 transition">Privacy Policy</a></li>
+          <li>
+  <button (click)="toggleModal(true)" class="hover:text-yellow-500 transition cursor-pointer">
+    Terms
+  </button>
+</li>
+
+@if (isModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+    
+    <div class="relative w-full max-w-2xl bg-[#121212] border border-gray-800 rounded-xl shadow-2xl flex flex-col max-h-[85vh]">
+      
+      <div class="flex items-center justify-between p-5 border-b border-gray-800">
+        <h2 class="text-white font-bold text-lg tracking-wide uppercase">Terms and Conditions</h2>
+        <button (click)="toggleModal(false)" class="text-gray-400 hover:text-white transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto p-8 custom-scrollbar text-gray-300">
+        <h1 class="text-[#d4af37] text-2xl font-bold border-b border-[#d4af37]/30 pb-4 mb-6">
+          Terms and Conditions - Gold Era Egypt
+        </h1>
+
+        <div class="space-y-6 text-sm leading-relaxed">
+          <section>
+            <h3 class="text-[#d4af37] font-semibold text-lg mb-2">Definitions</h3>
+            <p>In this Agreement, "Gold Era Egypt" refers to the registered Egyptian company operating...</p>
+          </section>
+
+          <section>
+            <h3 class="text-[#d4af37] font-semibold text-lg mb-2">Introduction</h3>
+            <p>By accessing and using the website of Gold Era Egypt and subscribing to our gold trading application...</p>
+          </section>
+
+          </div>
+      </div>
+
+      <div class="p-6 border-t border-gray-800 bg-[#0d0d0d] rounded-b-xl">
+        <div class="flex items-center gap-3 mb-6 group cursor-pointer" (click)="hasAgreed.set(!hasAgreed())">
+          <div class="relative flex items-center">
+            <input type="checkbox" 
+                   [checked]="hasAgreed()" 
+                   (change)="hasAgreed.set($any($event.target).checked)"
+                   class="w-5 h-5 appearance-none border-2 border-[#d4af37] rounded checked:bg-[#d4af37] transition-all cursor-pointer">
+            @if (hasAgreed()) {
+              <i class="fas fa-check absolute text-[10px] text-black left-[5px]"></i>
+            }
+          </div>
+          <label class="text-gray-300 text-sm cursor-pointer select-none group-hover:text-white transition-colors">
+            I have read and agree to the Terms and Conditions
+          </label>
+        </div>
+
+        <div class="flex gap-4">
+          <button (click)="toggleModal(false)" 
+                  class="flex-1 px-6 py-3 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white transition-all uppercase font-bold text-xs tracking-widest">
+            Decline
+          </button>
+          
+          <button [disabled]="!hasAgreed()"
+                  (click)="handleAccept()"
+                  class="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-[#d4af37] to-[#aa8a2e] text-black font-bold uppercase text-xs tracking-widest transition-all
+                         disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed active:scale-95">
+            Accept and Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+        </ul>
+      </div>
+
+      <!-- Social -->
+      <div>
+        <h3 class="text-white font-semibold mb-4">Follow Us</h3>
+
+        <div class="flex gap-4 flex-wrap">
+
+          <!-- Facebook -->
+          <a href="https://www.facebook.com/GoldEra.EGY?mibextid=ZbWKwL" target="_blank"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 hover:bg-blue-600 transition">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/goldera.global/" target="_blank"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 hover:bg-pink-500 transition">
+            <i class="fab fa-instagram"></i>
+          </a>
+
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/company/gold-era-egypt/" target="_blank"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 hover:bg-blue-500 transition">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+
+          <!-- YouTube -->
+          <a href="https://www.youtube.com/channel/UCMJxOmNi12KUHDjqxZsRCzQ" target="_blank"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 hover:bg-red-600 transition">
+            <i class="fab fa-youtube"></i>
+          </a>
+
+          <!-- WhatsApp -->
+          <a href="https://api.whatsapp.com/send?phone=201069311811" target="_blank"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 hover:bg-green-500 transition">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div
+      class="mt-10 border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+      <p>© 2026 GoldEra. All rights reserved.</p>
+    </div>
+
+  </div>
+</footer>

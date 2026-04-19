@@ -539,6 +539,7 @@
        <button
   (click)="placeOrder()"
   [disabled]="!isPlaceOrderEnabled() || isPlacingOrder()"
+  class="flex-1 py-3 rounded-lg border border-white/10 bg-yellow-600 text-black font-bold hover:bg-yellow-500 transition-all"
 >
   @if (isPlacingOrder()) {
     <i class="pi pi-spin pi-spinner mr-2"></i> Processing...

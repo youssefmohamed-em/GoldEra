@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { AddressService } from '../../services/address.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-profile-orders',
   imports :[DatePipe,CommonModule, ReactiveFormsModule,FormsModule ],
@@ -22,6 +23,7 @@ export class ProfileOrdersComponent implements OnInit {
 
  private orderService = inject(OrderHistoryService);
  private authService = inject(AuthService);
+ private route = inject (ActivatedRoute)
 private userId = this.authService.getCurrentUser()?.id;
   // ================== STATE ==================
   addresses = signal<UserAddress[]>([]);
@@ -77,7 +79,17 @@ ordersSize = signal(10);
 
   // ================== INIT ==================
   ngOnInit(): void {
-    this.loadInitialData();
+    this.route.queryParams.subscribe(params =>{
+      const tab = params['tab'];
+      if (tab) {
+  this.selectTab(tab);        
+      }else{
+
+        this.loadInitialData();
+      }
+    }
+
+    )
     this.cartService.loadCart();
   }
 
@@ -280,16 +292,32 @@ loadUserProfile() {
 loadUserOverview() {
   this.addressService.getUserOverview(this.userId!).subscribe({
     next: (res) => {
-      // ناخد أول عنصر
-      this.userOverview.set(res.content?.[0] ?? null);
-
-      console.log('👤 Overview:', res.content);
+      this.userOverview.set(res);
+      console.log('👤 Overview:', res);
     },
     error: (err) => {
       this.error.set('Failed to load user overview');
       console.error(err);
     }
   });
+}
+getStatusClass(status: string) {
+  switch (status) {
+    case 'PENDING':
+      return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30';
+
+    case 'INITIATED':
+      return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+
+    case 'COMPLETED':
+      return 'bg-green-500/10 text-green-400 border-green-500/30';
+
+    case 'CANCELLED':
+      return 'bg-red-500/10 text-red-400 border-red-500/30';
+
+    default:
+      return 'bg-gray-500/10 text-gray-400 border-gray-500/30';
+  }
 }
 loadOrders(page: number = 0) {
   this.ordersLoading.set(true);

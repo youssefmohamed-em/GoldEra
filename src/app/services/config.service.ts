@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 export interface Config {
   baseUrl: string;
   uploadUrl: string;
+  deliveryUrl:string;
 }
 
 @Injectable({
@@ -15,6 +16,8 @@ export class ConfigService {
   private readonly fallbackConfig: Config = {
     baseUrl: 'https://dhabk-api-uat.79-pay.com/goldera',
     uploadUrl: 'uplaod/gcp',
+    deliveryUrl:'https://dhabk-api-uat.79-pay.com/secure/delivery-service',
+    
   };
 
   constructor(private http: HttpClient) {}
@@ -48,6 +51,9 @@ export class ConfigService {
 
   get baseUrl(): string {
     return this.getConfig().baseUrl;
+  }
+  get deliveryUrl():string {
+    return this.getConfig().deliveryUrl;
   }
 
   get uploadUrl(): string {

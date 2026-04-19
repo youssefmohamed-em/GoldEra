@@ -3,9 +3,10 @@
   import { Router, RouterModule, RouterOutlet } from '@angular/router';
   import { AuthService } from '../../../services/auth.service';
   import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
   @Component({
     selector: 'app-register',
-    imports: [ ReactiveFormsModule, RouterModule, ],
+    imports: [ReactiveFormsModule, RouterModule, CommonModule],
     templateUrl: './register.component.html',
     styleUrl: './register.component.scss',
   })

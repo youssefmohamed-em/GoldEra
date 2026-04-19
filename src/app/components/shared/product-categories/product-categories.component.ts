@@ -5,6 +5,7 @@ import { CartItemService } from '../../../services/cart-item.service';
 import { ToastrService } from 'ngx-toastr';
 import { CartComponent } from "../../cart/cart.component";
 import { Router } from '@angular/router';
+import { TranslateService } from '../../../services/translate.service';
 
 @Component({
   selector: 'app-product-categories',
@@ -17,6 +18,7 @@ export class ProductCategoriesComponent implements OnInit {
   private categoriesService = inject(ProductCategoryService);
   private cartitem = inject(CartItemService);
   private toastr = inject(ToastrService);
+   private translate= inject(TranslateService);
   private router = inject(Router);
 
   previewProducts = signal<Product[]>([]);
@@ -63,4 +65,21 @@ export class ProductCategoriesComponent implements OnInit {
   viewDetails(slug: string) {
     this.router.navigate(['/dashboard/productDetails', slug]);
   }
+
+    t = (key: any) => this.translate.translate(key);
+
+    currentLang = this.translate.lang;
+
+getName(product: any) {
+  return this.currentLang() === 'ar'
+    ? product.nameAr
+    : product.nameEn;
+}
+
+getDescription(product: any) {
+  return this.currentLang() === 'ar'
+    ? product.descriptionAr
+    : product.descriptionEn;
+}
+
 }

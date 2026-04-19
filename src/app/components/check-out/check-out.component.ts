@@ -148,32 +148,44 @@ placeOrder() {
   if (!cartId) return;
   if (!payment) return;
 
-  const orderPayload = {
-    cartId: cartId,
-    currency: 'EGP',
-    totalAmount: this.getTotal(),
-    lang: 'en',
-    returnUrl: 'https://gold-era.eg/profile#orders',
-    fulfillmentType:
-      this.selectedMethod() === 'delivery' ? 'DELIVERY' : 'PICKUP',
-    deliveryMethodId: this.selectedDeliveryMethod()?.id,
+const orderPayload = {
+  cartId: cartId,
+  currency: 'EGP',
+  totalAmount: this.getTotal(),
+  lang: 'en',
+  returnUrl: 'https://gold-era.eg/profile#orders',
+  fulfillmentType: this.selectedMethod() === 'delivery' ? 'DELIVERY' : 'PICKUP',
+  paymentMethodId: payment.id,
+
+  ...(this.selectedMethod() === 'pickup' && {
+    branchId: this.selectedBranch()?.id
+  }),
+
+  ...(this.selectedMethod() === 'delivery' && {
     userAddressId: address.id,
-    paymentMethodId: payment.id
-  };
+    deliveryMethodId: this.selectedDeliveryMethod()?.id
+  })
+};
 
-  const paymentName = payment?.nameEn?.toLowerCase();
+const paymentName = payment?.nameEn?.toLowerCase();
 
-  // 🔥 Instapay
-  if (paymentName === 'instapay') {
-    this.createInstapayOrder(orderPayload);
-    return;
-  }
+// 🔥 Instapay
+if (paymentName === 'instapay') {
+  this.createInstapayOrder(orderPayload);
+  return;
+}
 
-  // 🔥 Forsa (الحل المطلوب)
-  if (paymentName === 'forsa') {
-    this.createForsaOrder(orderPayload);
-    return;
-  }
+// 🔥 Bank Transfer (مستقل)
+if (paymentName === 'bank transfer') {
+  this.createBankTransferOrder(orderPayload);
+  return;
+}
+
+// 🔥 Forsa
+if (paymentName === 'forsa') {
+  this.createForsaOrder(orderPayload);
+  return;
+}
 
   // باقي الحالات
   this.createNormalOrder(orderPayload);
@@ -253,22 +265,21 @@ createForsaOrder(payload: any) {
     }
   });
 }
-  loadBranches() {
-    this.loadingBranches.set(true);
+loadBranches() {
+  this.loadingBranches.set(true);
 
-    this.branchService.getBranches().subscribe({
-      next: (res: any) => {
-        this.branches.set(res.items || []);
-        this.showBranches.set(true);
-        this.loadingBranches.set(false);
-      },
-      error: (err) => {
-        console.error('Branches Error 👉', err);
-        this.loadingBranches.set(false);
-      }
-    });
-  }
-
+  this.branchService.getPickupBranches().subscribe({
+    next: (res: any) => {
+      this.branches.set(res.items || res || []);
+      this.showBranches.set(true);
+      this.loadingBranches.set(false);
+    },
+    error: (err) => {
+      console.error('Branches Error 👉', err);
+      this.loadingBranches.set(false);
+    }
+  });
+}
   nextStep() {
     if (!this.isNextEnabled()) return;
 
@@ -346,7 +357,29 @@ createInstapayOrder(payload: any) {
     }
   });
 }
+createBankTransferOrder(payload: any) {
+  this.isPlacingOrder.set(true);
 
+  this.deliveryService.initOrder(payload).subscribe({
+    next: (res: any) => {
+      this.isPlacingOrder.set(false);
+
+      console.log('🏦 Bank Transfer Order:', res);
+
+      const orderNumber = res?.orderNumber;
+
+      if (orderNumber) {
+        this.router.navigate(['/dashboard/orders', orderNumber]);
+      } else {
+        console.warn('⚠️ orderNumber not found');
+      }
+    },
+    error: (err) => {
+      console.error('❌ Bank Transfer Error:', err);
+      this.isPlacingOrder.set(false);
+    }
+  });
+}
   isNextEnabled(): boolean {
     const step = this.currentStep();
     const method = this.selectedMethod();
